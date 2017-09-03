@@ -8,4 +8,6 @@ open class KotlinNoop {
     fun noop() {
     }
 
+    @Benchmark
+    fun just_return() = 42
 }

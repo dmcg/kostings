@@ -6,4 +6,8 @@ public class JavaNoop {
 
     @Benchmark public void noop() {
     }
+
+    @Benchmark public int just_return() {
+        return 42;
+    }
 }
