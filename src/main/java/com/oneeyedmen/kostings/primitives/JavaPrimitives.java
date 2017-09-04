@@ -6,7 +6,7 @@ import org.openjdk.jmh.infra.Blackhole;
 
 public class JavaPrimitives {
 
-    @Benchmark
+//    @Benchmark
     public void sum_things_wrong_here() {
         int i1 = 41;
         int i2 = 1;
@@ -14,7 +14,7 @@ public class JavaPrimitives {
         // This is as fast as noop
     }
 
-    @Benchmark
+//    @Benchmark
     public int sum() {
         int i1 = 41;
         int i2 = 1;
@@ -23,12 +23,13 @@ public class JavaPrimitives {
     }
 
     @Benchmark
-    public void sum_with_state(IntState state) {
-        state.setResult(state.get_41() + 1);
+    public void _1_baseline(IntState state, Blackhole blackhole) {
+        blackhole.consume(state.get_41());
     }
 
     @Benchmark
-    public void sum_with_state_and_blackhole(IntState state, Blackhole blackhole) {
+    public void _2_sum(IntState state, Blackhole blackhole) {
         blackhole.consume(state.get_41() + 1);
     }
+
 }

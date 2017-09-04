@@ -13,12 +13,14 @@ open class IntState {
     val nullable_41: Int? = _41
     val nullInt: Int? = null
     var randomInt = 0
-    var randomNullableInt: Int? = 0
+    var `50 50 NullableInt`: Int? = 0
+    var `90 10 NullableInt`: Int? = 0
 
     @Setup(Level.Invocation)
     fun init() {
         randomInt = random.nextInt(10)
-        randomNullableInt = if (randomInt < 5) randomInt else null
+        `50 50 NullableInt` = if (randomInt < 5) null else randomInt
+        `90 10 NullableInt` = if (randomInt < 1) null else randomInt
     }
 
     var result: Int = 0
