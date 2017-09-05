@@ -1,13 +1,10 @@
 package com.oneeyedmen.kostings.primitives
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.natpryce.hamkrest.greaterThan
-import com.oneeyedmen.kostings.Results
+import com.oneeyedmen.kostings.Result
+import com.oneeyedmen.kostings.check
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.infra.Blackhole
-import kotlin.jvm.internal.FunctionReference
-import kotlin.reflect.KFunction
 
 
 open class KotlinPrimitives {
@@ -53,19 +50,25 @@ open class KotlinPrimitives {
     }
 
     @Test
-    fun test() {
-        val baselineResult = resultFor(this::_1_baseline)
-        val sumResult = resultFor(this::_2_sum)
-        assertThat(baselineResult!!.score, greaterThan(sumResult!!.score))
+    fun `nothing is definitely faster than baseline`() {
+        check(this::_1_baseline, Result::couldBeLessThan, this::_2_sum)
+        check(this::_1_baseline, Result::couldBeLessThan, this::_3_sum_nullable)
+        check(this::_1_baseline, Result::couldBeLessThan, this::_4_sum_always_null)
+        check(this::_1_baseline, Result::couldBeLessThan, this::_5_sum_50_50_nullable)
+        check(this::_1_baseline, Result::couldBeLessThan, this::_6_sum_90_10_nullable)
     }
 
+    @Test
+    fun `nullable is not detectably slower than non-nullable`() {
+        check(this::_2_sum, Result::couldBeGreaterThan, this::_3_sum_nullable)
+        check(this::_2_sum, Result::couldBeGreaterThan, this::_4_sum_always_null)
+        check(this::_2_sum, Result::couldBeGreaterThan, this::_5_sum_50_50_nullable)
+        check(this::_2_sum, Result::couldBeGreaterThan, this::_6_sum_90_10_nullable)
+    }
 }
 
-private fun resultFor(method: KFunction<*>) = method.methodName?.let { Results.resultNamed(it) }
 
-val KFunction<*>.methodName get() = (this as? FunctionReference)?.let {
-    "${it.boundReceiver.javaClass.name}.${it.name}"
-}
+
 
 /*
 Summary - neither null-checks nor unboxing are detectable

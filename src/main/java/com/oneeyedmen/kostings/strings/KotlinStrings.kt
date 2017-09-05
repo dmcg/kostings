@@ -1,5 +1,6 @@
 package com.oneeyedmen.kostings.strings
 
+import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.infra.Blackhole
 
@@ -23,6 +24,10 @@ open class KotlinStrings {
 
     // And even this
     fun inline_concat_2() = "${"${"hello" + " " + "world"}"}"
+
+    @Test
+    fun dummy() {
+    }
 
 }
 

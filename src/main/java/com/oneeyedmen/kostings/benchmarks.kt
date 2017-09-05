@@ -1,23 +1,18 @@
 package com.oneeyedmen.kostings
 
-import org.junit.runner.JUnitCore
 import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.Runner
-import org.openjdk.jmh.runner.options.ChainedOptionsBuilder
 import org.openjdk.jmh.runner.options.OptionsBuilder
 import java.io.File
 
 
 fun main(args: Array<String>) {
 
-    val patterns = listOf("KotlinPrimitives")
-    val options: ChainedOptionsBuilder = OptionsBuilder()
-        .warmupIterations(1)
-        .measurementIterations(1)
-        .forks(1)
+    val outputDir = File("results")
+    val patterns = listOf("primitives")
+    val baseOptions = Options("*", forks = 1, warmups = 5, measurements = 5)
 
-
-    val batches: List<Batch> = patterns.map { benchmark(options.resetPattern(it)) }
+    val batches: List<Batch> = patterns.map { readOrRunBenchmark(outputDir, baseOptions.copy(pattern = it)) }
 
     batches.forEach {
         plot(it, File("${it.pattern}.png"))
@@ -26,10 +21,9 @@ fun main(args: Array<String>) {
     val allResults: Map<String, Result> = batches.flatMap { it.results }.associateBy { it.benchmarkName }
     Results.allResults = allResults
 
-    val result = JUnitCore.runClasses(*allResults.toBenchmarkClasses().toTypedArray())
-    result.failures.forEach {
-        println(it)
-    }
+    val testClasses = allResults.toBenchmarkClasses().toTypedArray()
+
+    val result = runTests(*testClasses)
     System.exit(if (result.wasSuccessful()) 0 else 1)
 }
 
@@ -42,21 +36,25 @@ object Results {
 private fun Map<*, Result>.toBenchmarkClasses(): List<Class<*>> =
     values.map { it.benchmarkName.toClassName() }.toSet().map { Class.forName(it) }
 
-fun benchmark(optionsBuilder: OptionsBuilder): Batch {
-    val pattern = optionsBuilder.includes.first()
-    val file = File.createTempFile(pattern, ".csv")
-    val options = optionsBuilder.result(file.absolutePath).resultFormat(ResultFormatType.CSV).build()
-    Runner(options).run()
-    return readBatch(pattern, file)
+fun readOrRunBenchmark(outputDir: File, options: Options): Batch {
+    val file = outputDir.resolve(options.outputFilename + ".csv")
+    if (!file.isFile)
+        runBenchmark(options, file)
+    return readBatch(options.pattern, file)
 }
 
-private fun ChainedOptionsBuilder.resetPattern(pattern: String): OptionsBuilder = this.apply {
-    (this as OptionsBuilder).includes.clear()
-    include(pattern)
-} as OptionsBuilder
+private fun runBenchmark(options: Options, outputFile: File) {
+    outputFile.parentFile.mkdirs()
+    val optionsWithOutput = options.toOptions().result(outputFile.absolutePath).resultFormat(ResultFormatType.CSV).build()
+    Runner(optionsWithOutput).run()
+}
+
 
 private fun String.toClassName() = this.substringBeforeLast('.')
 
-
+data class Options(val pattern: String, val forks: Int, val warmups: Int, val measurements: Int) {
+    fun toOptions() = OptionsBuilder().include(pattern).forks(forks).warmupIterations(warmups).measurementIterations(measurements)
+    val outputFilename: String get() = "$pattern-f$forks-w$warmups-m$measurements"
+}
 
 

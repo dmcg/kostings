@@ -1,6 +1,7 @@
 package com.oneeyedmen.kostings.let
 
 import com.oneeyedmen.kostings.primitives.IntState
+import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.infra.Blackhole
 
@@ -17,4 +18,7 @@ open class KotlinLet {
     fun let(state: IntState, blackhole: Blackhole) = state.randomInt.plus(1).let {
         blackhole.consume(it)
     }
+
+    @Test
+    fun noop() {}
 }
