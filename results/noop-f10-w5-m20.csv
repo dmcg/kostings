@@ -1,0 +1,5 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit"
+"com.oneeyedmen.kostings.noop.JavaNoop.just_return","thrpt",1,200,452253084.411005,1792274.581594,"ops/s"
+"com.oneeyedmen.kostings.noop.JavaNoop.noop","thrpt",1,200,3226063881.498069,12815212.119774,"ops/s"
+"com.oneeyedmen.kostings.noop.KotlinNoop.just_return","thrpt",1,200,452836867.561684,1882557.798720,"ops/s"
+"com.oneeyedmen.kostings.noop.KotlinNoop.noop","thrpt",1,200,3215004742.538375,18523347.092883,"ops/s"
