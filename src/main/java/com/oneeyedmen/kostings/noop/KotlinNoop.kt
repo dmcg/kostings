@@ -16,7 +16,7 @@ open class KotlinNoop {
 
     @Test
     fun `noop is quicker`() {
-        check(this::noop, Result::couldBeLessThan, this::just_return)
+        check(this::noop, Result::couldBeFasterThan, this::just_return)
     }
 
 }

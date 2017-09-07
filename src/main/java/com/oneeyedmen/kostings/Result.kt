@@ -11,8 +11,8 @@ data class Result(
     val units: String
 ) {
 
-    fun couldBeGreaterThan(other: Result) = this.upperBound > other.lowerBound
-    fun couldBeLessThan(other: Result) = this.lowerBound < other.upperBound
+    fun couldBeFasterThan(other: Result) = this.upperBound > other.lowerBound
+    fun couldBeSlowerThan(other: Result) = this.lowerBound < other.upperBound
 
     val lowerBound get() = this.score - (this.error ?: BigDecimal.ZERO)
     val upperBound get() = this.score + (this.error ?: BigDecimal.ZERO)
