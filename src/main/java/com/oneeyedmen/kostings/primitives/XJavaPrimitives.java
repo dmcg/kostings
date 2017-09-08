@@ -5,7 +5,7 @@ import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.infra.Blackhole;
 
-public class JavaPrimitives {
+public class XJavaPrimitives {
 
 //    @Benchmark
     public void sum_things_wrong_here() {

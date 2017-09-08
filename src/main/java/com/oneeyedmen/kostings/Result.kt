@@ -11,6 +11,7 @@ data class Result(
     val units: String
 ) {
 
+    fun isFasterThan(other: Result) = this.score > other.score
     fun couldBeFasterThan(other: Result) = this.upperBound > other.lowerBound
     fun couldBeSlowerThan(other: Result) = this.lowerBound < other.upperBound
 

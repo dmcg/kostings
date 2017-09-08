@@ -4,15 +4,19 @@ import java.io.File
 
 
 fun main(args: Array<String>) {
-    results.plot(outputDir)
+    if (args.isNotEmpty())
+        patterns = args.toList()
 
+    results.plot(outputDir)
     val testClasses = results.allResults.toBenchmarkClasses().toTypedArray()
     val testResult = runTests(*testClasses)
     System.exit(if (testResult.wasSuccessful()) 0 else 1)
 }
 
-private val patterns = listOf("strings", "primitives", "let", "noop")
-private val baseOptions = Options("*", forks = 10, warmups = 5, measurements = 21)
+private val defaultPatterns = listOf("baselines", "strings", "primitives", "let")
+
+private var patterns = defaultPatterns
+private val baseOptions = Options("*", forks = 25, warmups = 5, measurements = 20)
 private val outputDir = File("results")
 
 val results by lazy {

@@ -15,32 +15,6 @@ open class KotlinPrimitives {
          */
         blackhole.consume(state._41)
     }
-//      public final _1_baseline(Lcom/oneeyedmen/kostings/primitives/IntState;Lorg/openjdk/jmh/infra/Blackhole;)V
-//    @Lorg/openjdk/jmh/annotations/Benchmark;()
-//    @Lorg/jetbrains/annotations/NotNull;() // invisible, parameter 0
-//    @Lorg/jetbrains/annotations/NotNull;() // invisible, parameter 1
-//    L0
-//    ALOAD 1
-//    LDC "state"
-//    INVOKESTATIC kotlin/jvm/internal/Intrinsics.checkParameterIsNotNull (Ljava/lang/Object;Ljava/lang/String;)V
-//    ALOAD 2
-//    LDC "blackhole"
-//    INVOKESTATIC kotlin/jvm/internal/Intrinsics.checkParameterIsNotNull (Ljava/lang/Object;Ljava/lang/String;)V
-//    L1
-//    LINENUMBER 16 L1
-//    ALOAD 2
-//    ALOAD 1
-//    INVOKEVIRTUAL com/oneeyedmen/kostings/primitives/IntState.get_41 ()I
-//    INVOKEVIRTUAL org/openjdk/jmh/infra/Blackhole.consume (I)V
-//    L2
-//    LINENUMBER 17 L2
-//    RETURN
-//    L3
-//    LOCALVARIABLE this Lcom/oneeyedmen/kostings/primitives/KotlinPrimitives; L0 L3 0
-//    LOCALVARIABLE state Lcom/oneeyedmen/kostings/primitives/IntState; L0 L3 1
-//    LOCALVARIABLE blackhole Lorg/openjdk/jmh/infra/Blackhole; L0 L3 2
-//    MAXSTACK = 2
-//    MAXLOCALS = 3
 
     @Benchmark
     fun _2_sum(state: IntState, blackhole: Blackhole) {
@@ -75,6 +49,8 @@ open class KotlinPrimitives {
         blackhole.consume(state.`90 10 NullableInt` ?: 0 + 1)
     }
 
+
+    // NB fails in this run
     @Test
     fun `parameter null check is undetectable`() {
         check(XJavaPrimitives::_1_baseline, Result::couldBeSlowerThan, this::_1_baseline)
