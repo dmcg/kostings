@@ -1,5 +1,8 @@
 package com.oneeyedmen.kostings.strings
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.oneeyedmen.kostings.couldBeSlowerThan
+import com.oneeyedmen.kostings.meanIsFasterThan
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.infra.Blackhole
@@ -19,18 +22,19 @@ open class KotlinStrings {
         blackhole.consume("${state.hello} ${state.world}")
     }
 
-    // The compiler optimizes this to a constant
-    fun inline_concat() = "${"hello"} ${"world"}"
+    fun `the compiler optimizes this to a constant`() = "${"hello"} ${"world"}"
 
-    // And even this
-    fun inline_concat_2() = "${"${"hello" + " " + "world"}"}"
+    fun `and even this`() = "${"${"hello" + " " + "world"}"}"
+
+    fun `but not this`() = "$hello $world"
 
     @Test
-    fun dummy() {
+    fun `kotlin is slower than Java`() {
+        assertThat(JavaStrings::concat, meanIsFasterThan(this::concat))
+        assertThat(JavaStrings::concat, ! couldBeSlowerThan(this::concat))
     }
 
 }
 
-/*
- Kotlin has an extra StringBuilder.append with a blank string
- */
+private val hello = "hello"
+private val world = "world"

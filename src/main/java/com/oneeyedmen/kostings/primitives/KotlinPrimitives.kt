@@ -1,7 +1,8 @@
 package com.oneeyedmen.kostings.primitives
 
-import com.oneeyedmen.kostings.Result
-import com.oneeyedmen.kostings.check
+import com.natpryce.hamkrest.assertion.assertThat
+import com.oneeyedmen.kostings.couldBeSlowerThan
+import com.oneeyedmen.kostings.meanIsFasterThan
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.infra.Blackhole
@@ -49,28 +50,26 @@ open class KotlinPrimitives {
         blackhole.consume(state.`90 10 NullableInt` ?: 0 + 1)
     }
 
-
-    // NB fails in this run
     @Test
-    fun `parameter null check is undetectable`() {
-        check(JavaPrimitives::_1_baseline, Result::couldBeSlowerThan, this::_1_baseline)
+    fun `parameter null check is detectable`() {
+        assertThat(JavaPrimitives::_1_baseline, meanIsFasterThan(this::_1_baseline))
     }
 
     @Test
     fun `nothing is definitely faster than baseline`() {
-        check(this::_1_baseline, Result::couldBeSlowerThan, this::_2_sum)
-        check(this::_1_baseline, Result::couldBeSlowerThan, this::_3_sum_nullable)
-        check(this::_1_baseline, Result::couldBeSlowerThan, this::_4_sum_always_null)
-        check(this::_1_baseline, Result::couldBeSlowerThan, this::_5_sum_50_50_nullable)
-        check(this::_1_baseline, Result::couldBeSlowerThan, this::_6_sum_90_10_nullable)
+        assertThat(this::_1_baseline, couldBeSlowerThan(this::_2_sum))
+        assertThat(this::_1_baseline, couldBeSlowerThan(this::_3_sum_nullable))
+        assertThat(this::_1_baseline, couldBeSlowerThan(this::_4_sum_always_null))
+        assertThat(this::_1_baseline, couldBeSlowerThan(this::_5_sum_50_50_nullable))
+        assertThat(this::_1_baseline, couldBeSlowerThan(this::_6_sum_90_10_nullable))
     }
 
     @Test
     fun `nullable is not detectably slower than non-nullable`() {
-        check(this::_2_sum, Result::couldBeSlowerThan, this::_3_sum_nullable)
-        check(this::_2_sum, Result::couldBeSlowerThan, this::_4_sum_always_null)
-        check(this::_2_sum, Result::couldBeSlowerThan, this::_5_sum_50_50_nullable)
-        check(this::_2_sum, Result::couldBeSlowerThan, this::_6_sum_90_10_nullable)
+        assertThat(this::_2_sum, couldBeSlowerThan(this::_3_sum_nullable))
+        assertThat(this::_2_sum, couldBeSlowerThan(this::_4_sum_always_null))
+        assertThat(this::_2_sum, couldBeSlowerThan(this::_5_sum_50_50_nullable))
+        assertThat(this::_2_sum, couldBeSlowerThan(this::_6_sum_90_10_nullable))
     }
 }
 

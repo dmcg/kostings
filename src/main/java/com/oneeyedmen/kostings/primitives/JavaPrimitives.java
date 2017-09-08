@@ -5,23 +5,7 @@ import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.infra.Blackhole;
 
-public class XJavaPrimitives {
-
-//    @Benchmark
-    public void sum_things_wrong_here() {
-        int i1 = 41;
-        int i2 = 1;
-        int sum = i1 + i2;
-        // This is as fast as noop
-    }
-
-//    @Benchmark
-    public int sum() {
-        int i1 = 41;
-        int i2 = 1;
-        return i1 + i2;
-        // and this is as fast as a straight return
-    }
+public class JavaPrimitives {
 
     @Benchmark
     public void _1_baseline(IntState state, Blackhole blackhole) {
