@@ -7,7 +7,7 @@ fun main(args: Array<String>) {
     if (args.isNotEmpty())
         patterns = args.toList()
 
-    results.plot(outputDir)
+    results.plot(imagesDir)
     val testClasses = results.allResults.toBenchmarkClasses().toTypedArray()
     val testResult = runTests(*testClasses)
     System.exit(if (testResult.wasSuccessful()) 0 else 1)
@@ -17,11 +17,12 @@ private val defaultPatterns = listOf("baselines", "strings", "primitives", "let"
 
 private var patterns = defaultPatterns
 private val baseOptions = Options("*", forks = 25, warmups = 5, measurements = 20)
-private val outputDir = File("results")
+private val resultsDir = File("results")
+private val imagesDir = resultsDir.resolve("images").apply { mkdirs() }
 
 val results by lazy {
     Results(patterns, baseOptions).apply {
-        readOrRun(outputDir)
+        readOrRun(resultsDir)
     }
 }
 

@@ -53,7 +53,7 @@ open class KotlinPrimitives {
     // NB fails in this run
     @Test
     fun `parameter null check is undetectable`() {
-        check(XJavaPrimitives::_1_baseline, Result::couldBeSlowerThan, this::_1_baseline)
+        check(JavaPrimitives::_1_baseline, Result::couldBeSlowerThan, this::_1_baseline)
     }
 
     @Test

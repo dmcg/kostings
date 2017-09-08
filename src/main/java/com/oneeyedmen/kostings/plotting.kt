@@ -5,7 +5,7 @@ import java.io.File
 
 fun Results.plot(outputDir: File) {
     batches.forEach {
-        it.plot(outputDir.resolve(it.options.outputFilename + ".png"))
+        it.plot(outputDir.resolve(it.options.outputFilename + ".svg"))
     }
 }
 
