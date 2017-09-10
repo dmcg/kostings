@@ -9,7 +9,8 @@ data class BatchOptions(val pattern: String, val forks: Int, val warmups: Int, v
         pattern = if (options.includes.isNotEmpty()) options.includes.first() else this.pattern,
         forks = options.forkCount.get() ?: this.forks,
         warmups = options.warmupIterations.get() ?: this.warmups,
-        measurements = options.warmupIterations.get() ?: this.measurements
+        measurements = options.warmupIterations.get() ?: this.measurements,
+        discriminator = options.output.get() ?: this.discriminator // nasty reuse, but I can't add parameters
     )
 
     fun toOptions() = OptionsBuilder().include(pattern).forks(forks).warmupIterations(warmups).measurementIterations(measurements)!!
