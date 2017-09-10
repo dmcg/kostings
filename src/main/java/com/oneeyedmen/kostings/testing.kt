@@ -18,10 +18,15 @@ fun runTests(vararg testClasses: Class<*>): org.junit.runner.Result =
 
 
 fun meanIsFasterThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::meanIsFasterThan, benchmarkFunction)
-fun couldBeFasterThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::couldBeFasterThan, benchmarkFunction)
-fun couldBeSlowerThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::couldBeSlowerThan, benchmarkFunction)
+fun probablyFasterThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::probablyFasterThan, benchmarkFunction)
+fun probablySlowerThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::probablySlowerThan, benchmarkFunction)
+fun possiblyFasterThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::possiblyFasterThan, benchmarkFunction)
+fun possiblySlowerThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::possiblySlowerThan, benchmarkFunction)
+fun fasterByLessThan(benchmarkFunction: KFunction<*>, proportion: Double) = benchmarkMatcher(_fasterByLessThan(proportion), benchmarkFunction)
 
-fun benchmarkMatcher(comparator: KFunction2<Result, Result, Boolean>, benchmarkFunction: KFunction<*>): Matcher<KFunction<*>> =
+typealias ResultComparator = KFunction2<Result, Result, Boolean>
+
+fun benchmarkMatcher(comparator: ResultComparator, benchmarkFunction: KFunction<*>): Matcher<KFunction<*>> =
     object : Matcher<KFunction<*>> {
         override val description get() = "with a benchmark result with ${comparator.name} faster than ${resultFor(benchmarkFunction)}"
 
@@ -36,6 +41,10 @@ fun benchmarkMatcher(comparator: KFunction2<Result, Result, Boolean>, benchmarkF
         }
     }
 
+fun _fasterByLessThan(proportion: Double): ResultComparator {
+    fun fasterByLessThan(r1: Result, r2: Result) = r1.fasterByLessThan(r2, proportion)
+    return ::fasterByLessThan
+}
 
 private fun resultFor(method: KFunction<*>) = method.methodName.let { results.resultNamed(it) }
 

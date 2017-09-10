@@ -1,8 +1,8 @@
 package com.oneeyedmen.kostings.primitives
 
 import com.natpryce.hamkrest.assertion.assertThat
-import com.oneeyedmen.kostings.couldBeSlowerThan
 import com.oneeyedmen.kostings.meanIsFasterThan
+import com.oneeyedmen.kostings.possiblySlowerThan
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.infra.Blackhole
@@ -57,19 +57,19 @@ open class KotlinPrimitives {
 
     @Test
     fun `nothing is definitely faster than baseline`() {
-        assertThat(this::_1_baseline, couldBeSlowerThan(this::_2_sum))
-        assertThat(this::_1_baseline, couldBeSlowerThan(this::_3_sum_nullable))
-        assertThat(this::_1_baseline, couldBeSlowerThan(this::_4_sum_always_null))
-        assertThat(this::_1_baseline, couldBeSlowerThan(this::_5_sum_50_50_nullable))
-        assertThat(this::_1_baseline, couldBeSlowerThan(this::_6_sum_90_10_nullable))
+        assertThat(this::_1_baseline, possiblySlowerThan(this::_2_sum))
+        assertThat(this::_1_baseline, possiblySlowerThan(this::_3_sum_nullable))
+        assertThat(this::_1_baseline, possiblySlowerThan(this::_4_sum_always_null))
+        assertThat(this::_1_baseline, possiblySlowerThan(this::_5_sum_50_50_nullable))
+        assertThat(this::_1_baseline, possiblySlowerThan(this::_6_sum_90_10_nullable))
     }
 
     @Test
     fun `nullable is not detectably slower than non-nullable`() {
-        assertThat(this::_2_sum, couldBeSlowerThan(this::_3_sum_nullable))
-        assertThat(this::_2_sum, couldBeSlowerThan(this::_4_sum_always_null))
-        assertThat(this::_2_sum, couldBeSlowerThan(this::_5_sum_50_50_nullable))
-        assertThat(this::_2_sum, couldBeSlowerThan(this::_6_sum_90_10_nullable))
+        assertThat(this::_2_sum, possiblySlowerThan(this::_3_sum_nullable))
+        assertThat(this::_2_sum, possiblySlowerThan(this::_4_sum_always_null))
+        assertThat(this::_2_sum, possiblySlowerThan(this::_5_sum_50_50_nullable))
+        assertThat(this::_2_sum, possiblySlowerThan(this::_6_sum_90_10_nullable))
     }
 }
 

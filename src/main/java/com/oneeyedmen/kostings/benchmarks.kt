@@ -16,7 +16,7 @@ fun main(args: Array<String>) {
 private val defaultPatterns = listOf("baselines", "strings", "primitives", "let")
 
 private var patterns = defaultPatterns
-private val baseOptions = Options("*", forks = 25, warmups = 5, measurements = 20)
+private val baseOptions = Options("*", forks = 1, warmups = 10, measurements = 1000, discriminator = "run2")
 private val resultsDir = File("results")
 private val imagesDir = resultsDir.resolve("images").apply { mkdirs() }
 

@@ -1,7 +1,7 @@
 package com.oneeyedmen.kostings.strings
 
 import com.natpryce.hamkrest.assertion.assertThat
-import com.oneeyedmen.kostings.couldBeSlowerThan
+import com.oneeyedmen.kostings.possiblySlowerThan
 import com.oneeyedmen.kostings.meanIsFasterThan
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
@@ -31,7 +31,7 @@ open class KotlinStrings {
     @Test
     fun `kotlin is slower than Java`() {
         assertThat(JavaStrings::concat, meanIsFasterThan(this::concat))
-        assertThat(JavaStrings::concat, ! couldBeSlowerThan(this::concat))
+        assertThat(JavaStrings::concat, ! possiblySlowerThan(this::concat))
     }
 
 }

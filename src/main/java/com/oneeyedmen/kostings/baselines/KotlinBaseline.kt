@@ -1,8 +1,8 @@
 package com.oneeyedmen.kostings.baselines
 
 import com.natpryce.hamkrest.assertion.assertThat
-import com.oneeyedmen.kostings.couldBeSlowerThan
-import com.oneeyedmen.kostings.meanIsFasterThan
+import com.oneeyedmen.kostings.fasterByLessThan
+import com.oneeyedmen.kostings.probablyFasterThan
 import com.oneeyedmen.kostings.strings.StringState
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
@@ -16,9 +16,9 @@ open class KotlinBaseline {
     }
 
     @Test
-    fun `kotlin is quicker but not convincingly`() {
-        assertThat(this::baseline, meanIsFasterThan(JavaBaseline::baseline))
-        assertThat(this::baseline, couldBeSlowerThan(JavaBaseline::baseline))
+    fun `java is quicker but not by much`() {
+        assertThat(JavaBaseline::baseline, probablyFasterThan(this::baseline))
+        assertThat(JavaBaseline::baseline, fasterByLessThan(this::baseline, 0.05))
     }
 
 }

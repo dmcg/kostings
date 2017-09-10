@@ -12,8 +12,11 @@ data class Result(
 ) {
 
     fun meanIsFasterThan(other: Result) = this.score > other.score
-    fun couldBeFasterThan(other: Result) = this.upperBound > other.lowerBound
-    fun couldBeSlowerThan(other: Result) = this.lowerBound < other.upperBound
+    fun probablyFasterThan(other: Result) = this.lowerBound > other.upperBound
+    fun probablySlowerThan(other: Result) = this.upperBound < other.lowerBound
+    fun possiblyFasterThan(other: Result) = this.upperBound > other.lowerBound
+    fun possiblySlowerThan(other: Result) = this.lowerBound < other.upperBound
+    fun fasterByLessThan(other: Result, proportion: Double) = (this.score - other.score) < this.score * BigDecimal(proportion)
 
     val lowerBound get() = this.score - (this.error ?: BigDecimal.ZERO)
     val upperBound get() = this.score + (this.error ?: BigDecimal.ZERO)
