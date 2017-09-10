@@ -1,0 +1,3 @@
+"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit"
+"com.oneeyedmen.kostings.let.KotlinLet.baseline","thrpt",1,1000,25485451.466801,45461.001700,"ops/s"
+"com.oneeyedmen.kostings.let.KotlinLet.let","thrpt",1,1000,25472791.138904,48392.816559,"ops/s"
