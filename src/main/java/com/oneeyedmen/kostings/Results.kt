@@ -4,7 +4,7 @@ import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.Runner
 import java.io.File
 
-class Results(private val patterns: List<String>, private val baseOptions: Options) {
+class Results(private val patterns: List<String>, private val baseOptions: BatchOptions) {
 
     lateinit var batches: List<Batch>
 
@@ -20,15 +20,15 @@ class Results(private val patterns: List<String>, private val baseOptions: Optio
 
 }
 
-fun readOrRunBenchmark(outputDir: File, options: Options): Batch {
-    val file = outputDir.resolve(options.outputFilename + ".csv")
+fun readOrRunBenchmark(outputDir: File, batchOptions: BatchOptions): Batch {
+    val file = outputDir.resolve(batchOptions.outputFilename + ".csv")
     if (!file.isFile)
-        runBenchmark(options, file)
-    return readBatch(options, file)
+        runBenchmark(batchOptions, file)
+    return readBatch(batchOptions, file)
 }
 
-private fun runBenchmark(options: Options, outputFile: File) {
+private fun runBenchmark(batchOptions: BatchOptions, outputFile: File) {
     outputFile.parentFile.mkdirs()
-    val optionsWithOutput = options.toOptions().result(outputFile.absolutePath).resultFormat(ResultFormatType.CSV).build()
+    val optionsWithOutput = batchOptions.toOptions().result(outputFile.absolutePath).resultFormat(ResultFormatType.CSV).build()
     Runner(optionsWithOutput).run()
 }

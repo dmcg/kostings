@@ -6,11 +6,11 @@ import java.io.File
 import java.math.BigDecimal
 import java.nio.charset.Charset
 
-data class Batch(val options: Options, val csvFile: File, val results: List<Result>)
+data class Batch(val batchOptions: BatchOptions, val csvFile: File, val results: List<Result>)
 
-fun readBatch(options: Options, csvFile: File): Batch {
+fun readBatch(batchOptions: BatchOptions, csvFile: File): Batch {
     return csvFile.reader(Charset.defaultCharset()).use { reader ->
-        Batch(options, csvFile,
+        Batch(batchOptions, csvFile,
             CSVFormat.DEFAULT.withFirstRecordAsHeader().parse(reader).map { it.toResult() }
         )
     }

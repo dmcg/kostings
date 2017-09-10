@@ -46,7 +46,7 @@ fun _fasterByLessThan(proportion: Double): ResultComparator {
     return ::fasterByLessThan
 }
 
-private fun resultFor(method: KFunction<*>) = method.methodName.let { results.resultNamed(it) }
+private fun resultFor(method: KFunction<*>) = method.methodName.let { runConfig.results.resultNamed(it) }
 
 val KFunction<*>.methodName
     get() = (this as? FunctionReference)?.let {
