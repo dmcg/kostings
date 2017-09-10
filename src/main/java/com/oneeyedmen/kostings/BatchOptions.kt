@@ -7,10 +7,10 @@ data class BatchOptions(val pattern: String, val forks: Int, val warmups: Int, v
 
     fun applyOptions(options: Options) = this.copy(
         pattern = if (options.includes.isNotEmpty()) options.includes.first() else this.pattern,
-        forks = options.forkCount.get() ?: this.forks,
-        warmups = options.warmupIterations.get() ?: this.warmups,
-        measurements = options.warmupIterations.get() ?: this.measurements,
-        discriminator = options.output.get() ?: this.discriminator // nasty reuse, but I can't add parameters
+        forks = options.forkCount.orElse(this.forks),
+        warmups = options.warmupIterations.orElse(this.warmups),
+        measurements = options.measurementIterations.orElse(this.measurements),
+        discriminator = options.output.orElse(this.discriminator) // nasty reuse, but I can't add parameters
     )
 
     fun toOptions() = OptionsBuilder().include(pattern).forks(forks).warmupIterations(warmups).measurementIterations(measurements)!!
