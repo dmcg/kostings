@@ -12,23 +12,35 @@ class Results(private val patterns: List<String>, private val baseOptions: Batch
         batches.flatMap { it.results }.associateBy { it.benchmarkName }
     }
 
-    fun readOrRun(outputDir: File) {
-        batches = patterns.map { readOrRunBenchmark(outputDir, baseOptions.copy(pattern = it)) }
+    fun readOrRun(outputDir: File, resultFormatType: ResultFormatType) {
+        batches = patterns.map { readOrRunBenchmark(outputDir, baseOptions.copy(pattern = it), resultFormatType) }
     }
 
     fun resultNamed(name: String): Result? = allResults[name]
 
 }
 
-fun readOrRunBenchmark(outputDir: File, batchOptions: BatchOptions): Batch {
-    val file = outputDir.resolve(batchOptions.outputFilename + ".csv")
+fun readOrRunBenchmark(outputDir: File, batchOptions: BatchOptions, resultFormatType: ResultFormatType): Batch {
+    val file = outputDir.resolve(batchOptions.outputFilename + resultFormatType.toExtension())
     if (!file.isFile)
-        runBenchmark(batchOptions, file)
-    return readBatch(batchOptions, file)
+        runBenchmark(batchOptions, file, resultFormatType)
+    return resultFormatType.readBatchFromFile(batchOptions, file)
 }
 
-private fun runBenchmark(batchOptions: BatchOptions, outputFile: File) {
+private fun ResultFormatType.readBatchFromFile(batchOptions: BatchOptions, file: File) = when (this) {
+    ResultFormatType.CSV-> readBatchFromCsv(batchOptions, file)
+    ResultFormatType.JSON -> readBatchFromJson(batchOptions, file)
+    else -> throw IllegalArgumentException("Unsupported result format type $this")
+}
+
+private fun ResultFormatType.toExtension() = when (this) {
+    ResultFormatType.CSV-> ".csv"
+    ResultFormatType.JSON -> ".json"
+    else -> IllegalArgumentException("Unsupported result format type $this")
+}
+
+private fun runBenchmark(batchOptions: BatchOptions, outputFile: File, resultFormatType: ResultFormatType) {
     outputFile.parentFile.mkdirs()
-    val optionsWithOutput = batchOptions.toOptions().result(outputFile.absolutePath).resultFormat(ResultFormatType.CSV).build()
+    val optionsWithOutput = batchOptions.toOptions().result(outputFile.absolutePath).resultFormat(resultFormatType).build()
     Runner(optionsWithOutput).run()
 }

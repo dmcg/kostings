@@ -5,10 +5,11 @@ import java.math.BigDecimal
 data class Result(
     val benchmarkName: String,
     val mode: String,
-    val samples: Int,
+    val samplesCount: Int,
     val score: BigDecimal,
     val error: BigDecimal?,
-    val units: String
+    val units: String,
+    val samples: List<BigDecimal>? = null
 ) {
 
     fun meanIsFasterThan(other: Result) = this.score > other.score

@@ -1,5 +1,6 @@
 package com.oneeyedmen.kostings
 
+import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.options.CommandLineOptions
 import java.io.File
 
@@ -29,7 +30,7 @@ object runConfig {
     var patterns: List<String> = defaultPatterns
     var batchOptions: BatchOptions = baseOptions
 
-    val results by lazy { Results(patterns, batchOptions).apply { readOrRun(resultsDir) } }
+    val results by lazy { Results(patterns, batchOptions).apply { readOrRun(resultsDir, ResultFormatType.JSON) } }
 }
 
 

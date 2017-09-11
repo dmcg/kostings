@@ -7,8 +7,15 @@ import matplotlib.pyplot as plt
 input_filename = sys.argv[1]
 output_filename = sys.argv[2]
 
-common_prefix_length = len('"com.oneeyedmen.kostings.')
-data = np.genfromtxt(input_filename, delimiter=',', names=True, dtype=None)
+def massage(data):
+    # JMH quotes only the string fields, which getfromtext can't handle. So we remove the quoting
+    data['Benchmark'] = np.char.strip(data['Benchmark'], '"')
+    data['Unit'] = np.char.strip(data['Unit'], '"')
+    return data
+
+common_prefix_length = len('com.oneeyedmen.kostings.')
+data = massage(np.genfromtxt(input_filename, delimiter=',', names=True, dtype=None))
+
 
 x = data['Score']
 y = np.arange(len(data['Benchmark']))
@@ -16,9 +23,9 @@ err = data['Score_Error_999']
 
 labels = []
 for name in data['Benchmark']:
-  labels.append(name[common_prefix_length:-1])
+  labels.append(name[common_prefix_length:])
 
-unit = data['Unit'][0][1:-1]
+unit = data['Unit'][0]
 
 plt.rcdefaults()
 plt.figure(figsize=(16, 9))
@@ -29,3 +36,4 @@ plt.xlabel("Performance / %s" % unit)
 plt.title("Benchmark")
 plt.tight_layout()
 plt.savefig(output_filename)
+
