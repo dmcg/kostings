@@ -11,9 +11,15 @@ data class JsonBatch(
     override val results: List<Result>)
 : Batch {
 
-    override val csvFile: File by lazy {
+    override val summaryCsvFile: File by lazy {
         File.createTempFile(batchOptions.outputFilename, ".csv").apply {
             writeCSV(this)
+        }
+    }
+
+    val samplesCsvFile: File by lazy {
+        File.createTempFile(batchOptions.outputFilename, ".samples.csv").apply {
+            writeSamplesCSV(this)
         }
     }
 }

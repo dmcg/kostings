@@ -21,4 +21,24 @@ data class Result(
 
     val lowerBound get() = this.score - (this.error ?: BigDecimal.ZERO)
     val upperBound get() = this.score + (this.error ?: BigDecimal.ZERO)
+
+    override fun toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
+}
+
+private data class EssentialData(
+    val benchmarkName: String,
+    val mode: String,
+    val samplesCount: Int,
+    val score: BigDecimal,
+    val error: BigDecimal?,
+    val units: String
+) {
+    constructor(result: Result) : this(
+        benchmarkName = result.benchmarkName,
+        mode = result.mode,
+        samplesCount = result.samplesCount,
+        score = result.score,
+        error = result.error,
+        units = result.units
+    )
 }

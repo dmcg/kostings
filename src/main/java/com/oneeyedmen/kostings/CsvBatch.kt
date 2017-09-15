@@ -13,7 +13,7 @@ data class CsvBatch(
     override val results: List<Result>)
 : Batch {
 
-    override val csvFile = dataFile
+    override val summaryCsvFile = dataFile
 }
 
 fun readBatchFromCsv(batchOptions: BatchOptions, csvFile: File): Batch =
@@ -34,12 +34,20 @@ private fun CSVRecord.toResult() = Result(
 
 fun Batch.writeCSV(file: File) {
     file.bufferedWriter(Charsets.UTF_8).use { writer ->
-        val printer = CSVPrinter(writer, CSVFormat.EXCEL).apply {
-
-        }
+        val printer = CSVPrinter(writer, CSVFormat.EXCEL)
         printer.printRecord("Benchmark", "Mode", "Samples", "Score", "Score Error (99.9%)", "Unit")
         results.forEach {
             printer.printRecord(it.benchmarkName, it.mode, it.samplesCount.toString(), it.score.toString(), it.error.toString(), it.units)
+        }
+    }
+}
+
+fun JsonBatch.writeSamplesCSV(file: File) {
+    file.bufferedWriter(Charsets.UTF_8).use { writer ->
+        val printer = CSVPrinter(writer, CSVFormat.EXCEL)
+        printer.printRecord(*results.map(Result::benchmarkName).toTypedArray())
+        for (i in results.first().samples!!.indices) {
+            printer.printRecord(*results.map { it.samples!![i] }.toTypedArray())
         }
     }
 }

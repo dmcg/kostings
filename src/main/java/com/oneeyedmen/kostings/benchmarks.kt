@@ -16,7 +16,8 @@ fun main(args: Array<String>) {
     runConfig.batchOptions = baseOptions.applyOptions(commandLineOptions)
     runConfig.patterns = if (commandLineOptions.includes.isNotEmpty()) commandLineOptions.includes else defaultPatterns
 
-    runConfig.results.plot(imagesDir)
+    runConfig.results.plotHistograms(imagesDir)
+    runConfig.results.plotSamples(imagesDir)
 
     val testClasses = runConfig.results.allResults.toBenchmarkClasses().toTypedArray()
     val testResult = runTests(*testClasses)
