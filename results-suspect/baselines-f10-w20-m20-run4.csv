@@ -1,3 +1,0 @@
-"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit"
-"com.oneeyedmen.kostings.baselines.JavaBaseline.baseline","thrpt",1,200,369785902.669334,1454248.933711,"ops/s"
-"com.oneeyedmen.kostings.baselines.KotlinBaseline.baseline","thrpt",1,200,370352360.362697,1599006.425911,"ops/s"

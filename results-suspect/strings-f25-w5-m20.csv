@@ -1,5 +1,0 @@
-"Benchmark","Mode","Threads","Samples","Score","Score Error (99.9%)","Unit"
-"com.oneeyedmen.kostings.strings.JavaStrings.baseline","thrpt",1,500,179529065.523368,2076586.556944,"ops/s"
-"com.oneeyedmen.kostings.strings.JavaStrings.concat","thrpt",1,500,57856331.507918,370262.997914,"ops/s"
-"com.oneeyedmen.kostings.strings.KotlinStrings.baseline","thrpt",1,500,180386657.993188,483334.677027,"ops/s"
-"com.oneeyedmen.kostings.strings.KotlinStrings.concat","thrpt",1,500,56529458.180475,181528.207737,"ops/s"
