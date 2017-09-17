@@ -11,7 +11,7 @@ private val baseOptions = BatchOptions("*", forks = 1, warmups = 10, measurement
 val resultsDir = File("results")
 val imagesDir = resultsDir.resolve("images").apply { mkdirs() }
 
-fun run(args: Array<String>) {
+fun main(args: Array<String>) {
 
     val commandLineOptions = CommandLineOptions(*args)
     runConfig.batchOptions = baseOptions.applyOptions(commandLineOptions)
@@ -19,12 +19,7 @@ fun run(args: Array<String>) {
 
     runConfig.results.plotHistograms(imagesDir)
     runConfig.results.plotSamples(imagesDir)
-
-    val testClasses = runConfig.results.allResults.toBenchmarkClasses().toTypedArray()
-    val testResult = runTests(*testClasses)
-    System.exit(if (testResult.wasSuccessful()) 0 else 1)
 }
-
 
 object runConfig {
     // this nastiness allows main to override with command-line options but JUnit tests to have access to un-overridden
@@ -36,9 +31,5 @@ object runConfig {
 }
 
 
-private fun Map<*, Result>.toBenchmarkClasses(): List<Class<*>> =
-    values.map { it.benchmarkName.toClassName() }.toSet().map { Class.forName(it) }
 
-
-private fun String.toClassName() = this.substringBeforeLast('.')
 

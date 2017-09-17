@@ -11,6 +11,20 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.KFunction2
 import kotlin.reflect.jvm.jvmName
 
+object Testing {
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val testClasses = runConfig.results.allResults.toBenchmarkClasses().toTypedArray()
+        val testResult = runTests(*testClasses)
+        System.exit(if (testResult.wasSuccessful()) 0 else 1)
+    }
+}
+
+private fun Map<*, Result>.toBenchmarkClasses(): List<Class<*>> =
+    values.map { it.benchmarkName.toClassName() }.toSet().map { Class.forName(it) }
+
+private fun String.toClassName() = this.substringBeforeLast('.')
+
 fun runTests(vararg testClasses: Class<*>): org.junit.runner.Result =
     JUnitCore().apply {
         addListener(TextListener(RealSystem()))
