@@ -56,7 +56,7 @@ typealias ResultComparator = KFunction2<Result, Result, Boolean>
 
 fun benchmarkMatcher(comparator: ResultComparator, benchmarkFunction: KFunction<*>): Matcher<KFunction<*>> =
     object : Matcher<KFunction<*>> {
-        override val description get() = "with a benchmark result with ${comparator.name} faster than ${resultFor(benchmarkFunction)}"
+        override val description get() = "with a benchmark result with ${comparator.name} faster than ${resultFor(benchmarkFunction)?.summary()}"
 
         override fun invoke(actual: KFunction<*>): MatchResult {
             val myResult = resultFor(benchmarkFunction)!!
@@ -64,7 +64,7 @@ fun benchmarkMatcher(comparator: ResultComparator, benchmarkFunction: KFunction<
             return if (comparator(actualResult, myResult)) {
                 MatchResult.Match
             } else {
-                MatchResult.Mismatch("was: $actualResult")
+                MatchResult.Mismatch("was: ${actualResult.summary()}")
             }
         }
     }

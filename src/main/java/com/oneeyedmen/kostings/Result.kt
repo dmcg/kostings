@@ -23,7 +23,11 @@ data class Result(
     val upperBound get() = this.score + (this.error ?: BigDecimal.ZERO)
 
     override fun toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
+
+    fun summary() = "$benchmarkName ${lowerBound.roundedTo(5)} < ${score.roundedTo(5)} < ${upperBound.roundedTo(5)}"
 }
+
+private fun BigDecimal.roundedTo(sigfigs: Int) = this.round(java.math.MathContext(sigfigs, java.math.RoundingMode.HALF_EVEN))
 
 private data class EssentialData(
     val benchmarkName: String,
