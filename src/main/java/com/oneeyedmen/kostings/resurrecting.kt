@@ -2,8 +2,7 @@ package com.oneeyedmen.kostings
 
 import java.io.File
 
-
-fun readBatches() = resultsDir.listFiles { _, name -> name.endsWith(".json") }.mapNotNull { it.toBatch() }
+fun readBatches(dir: File): List<Batch> = dir.listFiles { _, name -> name.endsWith(".json") }.mapNotNull { it.toBatch() }
 
 private fun File.toBatch(): Batch? {
     val batchOptions = this.toBatchOptions() ?: return null

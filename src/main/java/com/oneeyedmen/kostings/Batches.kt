@@ -4,7 +4,7 @@ import org.openjdk.jmh.results.format.ResultFormatType
 import org.openjdk.jmh.runner.Runner
 import java.io.File
 
-class Results(private val patterns: List<String>, private val baseOptions: BatchOptions) : Iterable<Batch> {
+class Batches(private val patterns: List<String>, private val baseOptions: BatchOptions) : Iterable<Batch> {
 
     lateinit var batches: List<Batch>
 

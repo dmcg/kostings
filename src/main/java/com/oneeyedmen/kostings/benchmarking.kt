@@ -9,16 +9,17 @@ private val defaultPatterns = listOf("baselines", "strings", "primitives", "let"
 private val baseOptions = BatchOptions("*", forks = 1, warmups = 10, measurements = 10)
 
 val resultsDir = File("results")
+val canonicalResultsDir = File("canonical-results")
 val imagesDir = resultsDir.resolve("images").apply { mkdirs() }
 
-fun main(args: Array<String>) {
+private fun main(args: Array<String>) {
 
     val commandLineOptions = CommandLineOptions(*args)
     runConfig.batchOptions = baseOptions.applyOptions(commandLineOptions)
     runConfig.patterns = if (commandLineOptions.includes.isNotEmpty()) commandLineOptions.includes else defaultPatterns
 
-    runConfig.results.plotHistograms(imagesDir)
-    runConfig.results.plotSamples(imagesDir)
+    runConfig.batches.plotHistograms(imagesDir)
+    runConfig.batches.plotSamples(imagesDir)
 }
 
 object runConfig {
@@ -27,7 +28,7 @@ object runConfig {
     var patterns: List<String> = defaultPatterns
     var batchOptions: BatchOptions = baseOptions
 
-    val results by lazy { Results(patterns, batchOptions).apply { readOrRun(resultsDir, ResultFormatType.JSON) } }
+    val batches by lazy { Batches(patterns, batchOptions).apply { readOrRun(resultsDir, ResultFormatType.JSON) } }
 }
 
 

@@ -14,7 +14,7 @@ import kotlin.reflect.jvm.jvmName
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {
-        val testClasses = runConfig.results.allResults.toBenchmarkClasses().toTypedArray()
+        val testClasses = runConfig.batches.allResults.toBenchmarkClasses().toTypedArray()
         val testResult = runTests(*testClasses)
         System.exit(if (testResult.wasSuccessful()) 0 else 1)
     }
@@ -60,7 +60,7 @@ fun _fasterByLessThan(proportion: Double): ResultComparator {
     return ::fasterByLessThan
 }
 
-private fun resultFor(method: KFunction<*>) = method.methodName.let { runConfig.results.resultNamed(it) }
+private fun resultFor(method: KFunction<*>) = method.methodName.let { runConfig.batches.resultNamed(it) }
 
 val KFunction<*>.methodName
     get() = (this as? FunctionReference)?.let {

@@ -5,7 +5,7 @@ object PlotRebuilding{
 
     @JvmStatic
     fun main(args: Array<String>) {
-        val batches = readBatches()
+        val batches = readBatches(resultsDir)
         batches.plotHistograms(imagesDir)
         batches.plotSamples(imagesDir)
     }
