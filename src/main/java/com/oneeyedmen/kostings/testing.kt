@@ -14,14 +14,28 @@ import kotlin.reflect.jvm.jvmName
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {
-        val testClasses = runConfig.batches.allResults.toBenchmarkClasses().toTypedArray()
+
+        val allResults = resurrectedBatches.batches.flatMap { it.results }
+        val testClasses = allResults.toBenchmarkClasses().toTypedArray()
         val testResult = runTests(*testClasses)
         System.exit(if (testResult.wasSuccessful()) 0 else 1)
     }
 }
 
-private fun Map<*, Result>.toBenchmarkClasses(): List<Class<*>> =
-    values.map { it.benchmarkName.toClassName() }.toSet().map { Class.forName(it) }
+object resurrectedBatches {
+    val batches: List<Batch> = readBatches(canonicalResultsDir)
+
+    fun resultNamed(benchmarkName: String): Result? = resultsByName[benchmarkName]
+
+    private val resultsByName: Map<String, Result> = batches
+        .flatMap { it.results }
+        .groupBy { it.benchmarkName }
+        .mapValues { entry -> entry.value.first() }
+
+}
+
+private fun List<Result>.toBenchmarkClasses(): List<Class<*>> =
+    map { it.benchmarkName.toClassName() }.toSet().map { Class.forName(it) }
 
 private fun String.toClassName() = this.substringBeforeLast('.')
 
@@ -60,7 +74,7 @@ fun _fasterByLessThan(proportion: Double): ResultComparator {
     return ::fasterByLessThan
 }
 
-private fun resultFor(method: KFunction<*>) = method.methodName.let { runConfig.batches.resultNamed(it) }
+private fun resultFor(method: KFunction<*>) = method.methodName.let { resurrectedBatches.resultNamed(it) }
 
 val KFunction<*>.methodName
     get() = (this as? FunctionReference)?.let {
