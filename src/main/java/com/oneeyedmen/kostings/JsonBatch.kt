@@ -3,6 +3,7 @@ package com.oneeyedmen.kostings
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.io.File
+import java.io.IOException
 import java.math.BigDecimal
 
 data class JsonBatch(
@@ -24,10 +25,10 @@ data class JsonBatch(
     }
 }
 
-fun readBatchFromJson(batchOptions: BatchOptions, jsonFile: File): Batch =
-    JsonBatch(batchOptions, jsonFile,
-        jacksonObjectMapper().readTree(jsonFile).asIterable().map { it.toResult() }
-    )
+fun readBatchFromJson(batchOptions: BatchOptions, jsonFile: File): Batch {
+    val results = jacksonObjectMapper().readTree(jsonFile)?.asIterable()?.map { it.toResult() } ?: throw IOException("Can't read $jsonFile as JSON")
+    return JsonBatch(batchOptions, jsonFile, results)
+}
 
 private fun JsonNode.toResult(): Result {
     val metricNode = this["primaryMetric"]

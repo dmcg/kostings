@@ -4,14 +4,14 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 
 
-fun Results.plotHistograms(outputDir: File) {
-    batches.forEach {
+fun Iterable<Batch>.plotHistograms(outputDir: File) {
+    forEach {
         it.plotHistogram(outputDir.resolve(it.batchOptions.outputFilename + ".png"))
     }
 }
 
-fun Results.plotSamples(outputDir: File) {
-    batches.forEach {
+fun Iterable<Batch>.plotSamples(outputDir: File) {
+    forEach {
         if (it is JsonBatch)
             it.plotSamples(outputDir.resolve(it.batchOptions.outputFilename + ".samples.png"))
     }

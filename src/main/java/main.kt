@@ -2,5 +2,5 @@
 
 
 fun main(args: Array<String>) {
-    com.oneeyedmen.kostings.main(args)
+    com.oneeyedmen.kostings.run(args)
 }

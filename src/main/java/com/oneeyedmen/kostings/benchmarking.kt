@@ -7,10 +7,11 @@ import java.io.File
 
 private val defaultPatterns = listOf("baselines", "strings", "primitives", "let")
 private val baseOptions = BatchOptions("*", forks = 1, warmups = 10, measurements = 10)
-private val resultsDir = File("results")
-private val imagesDir = resultsDir.resolve("images").apply { mkdirs() }
 
-fun main(args: Array<String>) {
+val resultsDir = File("results")
+val imagesDir = resultsDir.resolve("images").apply { mkdirs() }
+
+fun run(args: Array<String>) {
 
     val commandLineOptions = CommandLineOptions(*args)
     runConfig.batchOptions = baseOptions.applyOptions(commandLineOptions)
