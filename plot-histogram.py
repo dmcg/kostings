@@ -7,13 +7,14 @@ import matplotlib.pyplot as plt
 input_filename = sys.argv[1]
 output_filename = sys.argv[2]
 
+common_prefix_length = len('com.oneeyedmen.kostings.')
+
 def massage(data):
     # JMH quotes only the string fields, which getfromtext can't handle. So we remove the quoting
     data['Benchmark'] = np.char.strip(data['Benchmark'], '"')
     data['Unit'] = np.char.strip(data['Unit'], '"')
     return data
 
-common_prefix_length = len('com.oneeyedmen.kostings.')
 data = massage(np.genfromtxt(input_filename, delimiter=',', names=True, dtype=None))
 
 
