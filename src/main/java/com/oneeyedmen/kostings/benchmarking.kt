@@ -7,7 +7,7 @@ import java.io.File
 
 
 private val defaultPatterns = listOf("baselines", "strings", "primitives", "let")
-private val baseOptions = BatchOptions("*", forks = 1, warmups = 10, measurements = 10)
+private val baseOptions = BatchOptions("*", forks = 10, warmups = 20, measurements = 20)
 
 val resultsDir = File("results")
 val canonicalResultsDir = File("canonical-results")
