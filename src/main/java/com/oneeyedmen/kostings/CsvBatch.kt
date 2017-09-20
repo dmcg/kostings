@@ -4,7 +4,6 @@ import org.apache.commons.csv.CSVFormat
 import org.apache.commons.csv.CSVPrinter
 import org.apache.commons.csv.CSVRecord
 import java.io.File
-import java.math.BigDecimal
 import java.nio.charset.Charset
 
 data class CsvBatch(
@@ -27,8 +26,8 @@ private fun CSVRecord.toResult() = Result(
     benchmarkName = this["Benchmark"],
     mode = this["Mode"],
     samplesCount = this["Samples"].toInt(),
-    score = this["Score"].toBigDecimal()!!,
-    error = this["Score Error (99.9%)"].toBigDecimal(),
+    score = this["Score"].toDouble(),
+    error = this["Score Error (99.9%)"].toDouble(),
     units = this["Unit"]
 )
 
@@ -51,5 +50,3 @@ fun JsonBatch.writeSamplesCSV(file: File) {
         }
     }
 }
-
-private fun String.toBigDecimal() = if (this == "NaN") null else BigDecimal(this)

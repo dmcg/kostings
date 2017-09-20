@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import java.io.File
 import java.io.IOException
-import java.math.BigDecimal
 
 data class JsonBatch(
     override val batchOptions: BatchOptions,
@@ -32,16 +31,15 @@ fun readBatchFromJson(batchOptions: BatchOptions, jsonFile: File): Batch {
 
 private fun JsonNode.toResult(): Result {
     val metricNode = this["primaryMetric"]
-    val samples = metricNode["rawData"].asIterable().asIterable().flatten().map(JsonNode::toBigDecimal)
+    val samples = metricNode["rawData"].asIterable().asIterable().flatten().map(JsonNode::asDouble).toDoubleArray()
+        // TODO - not a very efficient way of reading
     return Result(
         benchmarkName = this["benchmark"].asText(),
         mode = this["mode"].asText(),
-        score = metricNode["score"].toBigDecimal(),
-        error = metricNode["scoreError"].toBigDecimal(),
+        score = metricNode["score"].doubleValue(),
+        error = metricNode["scoreError"].doubleValue(),
         units = metricNode["scoreUnit"].asText(),
         samplesCount = samples.size,
         samples = samples
     )
 }
-
-private fun JsonNode.toBigDecimal() = BigDecimal(this.asText())
