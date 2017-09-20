@@ -51,3 +51,4 @@ crashlytics-build.properties
 fabric.properties
 
 .DS_Store
+/old-images/
