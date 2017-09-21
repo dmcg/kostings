@@ -30,7 +30,7 @@ object resurrectedBatches {
     private val resultsByName: Map<String, Result> = batches
         .flatMap { it.results }
         .groupBy { it.benchmarkName }
-        .mapValues { entry -> entry.value.first() }
+        .mapValues { entry -> entry.value.mergeResults() }
 
 }
 
