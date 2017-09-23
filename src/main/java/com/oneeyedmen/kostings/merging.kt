@@ -8,7 +8,7 @@ fun Iterable<Result>.mergeResults(): Result = aggregateStats().let { stats ->
         score = stats.mean,
         error = stats.error,
         units = this.allTheSame(Result::units),
-        samples = null // as they won't be contemporaneous
+        samples = this.first().samples // as they won't be contemporaneous
     )
 }
 

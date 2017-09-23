@@ -1,15 +1,11 @@
 package com.oneeyedmen.kostings.matchers
 
-import com.natpryce.hamkrest.Matcher
 import com.natpryce.hamkrest.MatchResult
+import com.natpryce.hamkrest.Matcher
+import com.oneeyedmen.kostings.PerformanceData
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math3.stat.inference.TestUtils.tTest
 
-
-interface PerformanceData {
-    val samples: DoubleArray
-    val description : String
-}
 
 /**
  * Is it likely that the test [PerformanceData] shows a significantly different mean metric than the benchmark [PerformanceData] ? (either higher or lower)

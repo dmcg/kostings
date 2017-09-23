@@ -2,6 +2,8 @@ package com.oneeyedmen.kostings
 
 import com.natpryce.hamkrest.MatchResult
 import com.natpryce.hamkrest.Matcher
+import com.oneeyedmen.kostings.matchers.probablyDifferentTo
+import com.oneeyedmen.kostings.matchers.probablyMoreThan
 import org.junit.internal.RealSystem
 import org.junit.internal.TextListener
 import org.junit.runner.JUnitCore
@@ -43,22 +45,37 @@ fun runTests(vararg testClasses: Class<*>): org.junit.runner.Result =
     }.run(*testClasses)
 
 
+fun probablyDifferentTo(benchmarkFunction: KFunction<*>, alpha: Double = 0.95) =
+    benchmarkMatcher(benchmarkFunction) { probablyDifferentTo(it, alpha) }
+
+fun probablyFasterThan(benchmarkFunction: KFunction<*>, alpha: Double = 0.95, byAFactorOf: Double) =
+    benchmarkMatcher(benchmarkFunction) { probablyMoreThan(it, alpha, byAFactorOf) }
+
+private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (PerformanceData) -> Matcher<PerformanceData>) =
+    object : Matcher<KFunction<*>> {
+        override val description get() = delegateMatcher.description
+
+        override fun invoke(actual: KFunction<*>): MatchResult {
+            val actualResult = resultFor(actual)
+            return delegateMatcher.invoke(actualResult.asPerformanceData())
+        }
+
+        private val delegateMatcher by lazy { comparator(resultFor(benchmarkFunction).asPerformanceData()) }
+    }
+
 fun meanIsFasterThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::meanIsFasterThan, benchmarkFunction)
-fun probablyFasterThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::probablyFasterThan, benchmarkFunction)
-fun probablySlowerThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::probablySlowerThan, benchmarkFunction)
-fun possiblyFasterThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::possiblyFasterThan, benchmarkFunction)
 fun possiblySlowerThan(benchmarkFunction: KFunction<*>) = benchmarkMatcher(Result::possiblySlowerThan, benchmarkFunction)
 fun fasterByLessThan(benchmarkFunction: KFunction<*>, proportion: Double) = benchmarkMatcher(_fasterByLessThan(proportion), benchmarkFunction)
 
 typealias ResultComparator = KFunction2<Result, Result, Boolean>
 
-fun benchmarkMatcher(comparator: ResultComparator, benchmarkFunction: KFunction<*>): Matcher<KFunction<*>> =
+fun benchmarkMatcher(comparator: ResultComparator, benchmarkFunction: KFunction<*>) =
     object : Matcher<KFunction<*>> {
         override val description get() = "with a benchmark result with ${comparator.name} faster than ${resultFor(benchmarkFunction)?.summary()}"
 
         override fun invoke(actual: KFunction<*>): MatchResult {
-            val myResult = resultFor(benchmarkFunction) ?: return MatchResult.Mismatch("no results were found for ${benchmarkFunction.methodName}")
-            val actualResult = resultFor(actual) ?: return MatchResult.Mismatch("no results were found for ${actual.methodName}")
+            val myResult = resultFor(benchmarkFunction)
+            val actualResult = resultFor(actual)
             return if (comparator(actualResult, myResult)) {
                 MatchResult.Match
             } else {
@@ -72,7 +89,8 @@ fun _fasterByLessThan(proportion: Double): ResultComparator {
     return ::fasterByLessThan
 }
 
-private fun resultFor(method: KFunction<*>) = method.methodName.let { resurrectedBatches.resultNamed(it) }
+private fun resultFor(method: KFunction<*>) =
+    method.methodName.let { resurrectedBatches.resultNamed(it) } ?: throw IllegalStateException("no results were found for ${method.methodName}")
 
 val KFunction<*>.methodName
     get() = (this as? FunctionReference)?.let {

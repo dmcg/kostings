@@ -11,16 +11,17 @@ class Result(
     val units: String,
     val samples: DoubleArray? = null
 ) {
+    fun asPerformanceData() = object: PerformanceData {
+        override val description = this@Result.toString()
+        override val samples = this@Result.samples!!
+    }
 
     fun meanIsFasterThan(other: Result) = this.score > other.score
-    fun probablyFasterThan(other: Result) = this.lowerBound > other.upperBound
-    fun probablySlowerThan(other: Result) = this.upperBound < other.lowerBound
-    fun possiblyFasterThan(other: Result) = this.upperBound > other.lowerBound
     fun possiblySlowerThan(other: Result) = this.lowerBound < other.upperBound
     fun fasterByLessThan(other: Result, proportion: Double) = (this.score - other.score) < this.score * proportion
 
-    val lowerBound get() = this.score - this.error
-    val upperBound get() = this.score + this.error
+    private val lowerBound get() = this.score - this.error
+    private val upperBound get() = this.score + this.error
 
     override fun toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
 

@@ -1,7 +1,6 @@
 package com.oneeyedmen.kostings
 
 import com.natpryce.hamkrest.assertion.assertThat
-import com.oneeyedmen.kostings.matchers.PerformanceData
 import com.oneeyedmen.kostings.matchers.probablyDifferentTo
 import com.oneeyedmen.kostings.matchers.probablyLessThan
 import com.oneeyedmen.kostings.matchers.probablyMoreThan
