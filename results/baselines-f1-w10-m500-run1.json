@@ -1,7 +1,7 @@
 [
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.baselines.JavaBaseline.baseline",
+        "benchmark" : "costOfKotlin.baselines.JavaBaseline.baseline",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -546,7 +546,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.baselines.KotlinBaseline.baseline",
+        "benchmark" : "costOfKotlin.baselines.KotlinBaseline.baseline",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,

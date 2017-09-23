@@ -1,5 +1,5 @@
 
-package com.oneeyedmen.kostings.strings;
+package costOfKotlin.strings;
 
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;

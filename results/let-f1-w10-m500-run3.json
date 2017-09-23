@@ -1,7 +1,7 @@
 [
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.let.KotlinLet.baseline",
+        "benchmark" : "costOfKotlin.let.KotlinLet.baseline",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -546,7 +546,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.let.KotlinLet.let",
+        "benchmark" : "costOfKotlin.let.KotlinLet.let",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,

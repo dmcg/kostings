@@ -1,4 +1,4 @@
-package com.oneeyedmen.kostings.primitives
+package costOfKotlin.primitives
 
 import com.natpryce.hamkrest.assertion.assertThat
 import com.oneeyedmen.kostings.meanIsFasterThan

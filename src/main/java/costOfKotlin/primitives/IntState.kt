@@ -1,4 +1,4 @@
-package com.oneeyedmen.kostings.primitives
+package costOfKotlin.primitives
 
 import org.openjdk.jmh.annotations.Level
 import org.openjdk.jmh.annotations.Scope

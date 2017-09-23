@@ -1,7 +1,7 @@
 [
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.primitives.JavaPrimitives._1_baseline",
+        "benchmark" : "costOfKotlin.primitives.JavaPrimitives._1_baseline",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -546,7 +546,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.primitives.JavaPrimitives._2_sum",
+        "benchmark" : "costOfKotlin.primitives.JavaPrimitives._2_sum",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -1091,7 +1091,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.primitives.KotlinPrimitives._1_baseline",
+        "benchmark" : "costOfKotlin.primitives.KotlinPrimitives._1_baseline",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -1636,7 +1636,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.primitives.KotlinPrimitives._2_sum",
+        "benchmark" : "costOfKotlin.primitives.KotlinPrimitives._2_sum",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -2181,7 +2181,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.primitives.KotlinPrimitives._3_sum_nullable",
+        "benchmark" : "costOfKotlin.primitives.KotlinPrimitives._3_sum_nullable",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -2726,7 +2726,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.primitives.KotlinPrimitives._4_sum_always_null",
+        "benchmark" : "costOfKotlin.primitives.KotlinPrimitives._4_sum_always_null",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -3271,7 +3271,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.primitives.KotlinPrimitives._5_sum_50_50_nullable",
+        "benchmark" : "costOfKotlin.primitives.KotlinPrimitives._5_sum_50_50_nullable",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -3816,7 +3816,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.primitives.KotlinPrimitives._6_sum_90_10_nullable",
+        "benchmark" : "costOfKotlin.primitives.KotlinPrimitives._6_sum_90_10_nullable",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,

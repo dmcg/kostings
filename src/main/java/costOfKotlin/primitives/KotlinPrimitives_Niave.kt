@@ -1,4 +1,4 @@
-package com.oneeyedmen.kostings.primitives
+package costOfKotlin.primitives
 
 import java.util.*
 

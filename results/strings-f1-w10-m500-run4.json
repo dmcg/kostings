@@ -1,7 +1,7 @@
 [
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.strings.JavaStrings.baseline",
+        "benchmark" : "costOfKotlin.strings.JavaStrings.baseline",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -546,7 +546,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.strings.JavaStrings.concat",
+        "benchmark" : "costOfKotlin.strings.JavaStrings.concat",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -1091,7 +1091,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.strings.KotlinStrings.baseline",
+        "benchmark" : "costOfKotlin.strings.KotlinStrings.baseline",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,
@@ -1636,7 +1636,7 @@
     },
     {
         "jmhVersion" : "1.19",
-        "benchmark" : "com.oneeyedmen.kostings.strings.KotlinStrings.concat",
+        "benchmark" : "costOfKotlin.strings.KotlinStrings.concat",
         "mode" : "thrpt",
         "threads" : 1,
         "forks" : 1,

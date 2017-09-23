@@ -1,6 +1,6 @@
-package com.oneeyedmen.kostings.let
+package costOfKotlin.let
 
-import com.oneeyedmen.kostings.primitives.IntState
+import costOfKotlin.primitives.IntState
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.infra.Blackhole

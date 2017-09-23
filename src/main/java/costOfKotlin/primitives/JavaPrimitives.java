@@ -1,5 +1,5 @@
 
-package com.oneeyedmen.kostings.primitives;
+package costOfKotlin.primitives;
 
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;

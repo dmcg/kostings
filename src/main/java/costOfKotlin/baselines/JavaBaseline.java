@@ -1,6 +1,6 @@
-package com.oneeyedmen.kostings.baselines;
+package costOfKotlin.baselines;
 
-import com.oneeyedmen.kostings.strings.StringState;
+import costOfKotlin.strings.StringState;
 import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.infra.Blackhole;

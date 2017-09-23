@@ -1,4 +1,4 @@
-package com.oneeyedmen.kostings.strings
+package costOfKotlin.strings
 
 import org.openjdk.jmh.annotations.Scope
 import org.openjdk.jmh.annotations.State
