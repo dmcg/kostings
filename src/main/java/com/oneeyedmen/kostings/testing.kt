@@ -57,8 +57,8 @@ fun benchmarkMatcher(comparator: ResultComparator, benchmarkFunction: KFunction<
         override val description get() = "with a benchmark result with ${comparator.name} faster than ${resultFor(benchmarkFunction)?.summary()}"
 
         override fun invoke(actual: KFunction<*>): MatchResult {
-            val myResult = resultFor(benchmarkFunction)!!
-            val actualResult = resultFor(actual)!!
+            val myResult = resultFor(benchmarkFunction) ?: return MatchResult.Mismatch("no results were found for ${benchmarkFunction.methodName}")
+            val actualResult = resultFor(actual) ?: return MatchResult.Mismatch("no results were found for ${actual.methodName}")
             return if (comparator(actualResult, myResult)) {
                 MatchResult.Match
             } else {
