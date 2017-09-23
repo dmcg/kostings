@@ -30,6 +30,6 @@ private fun Iterable<Result>.aggregateStats(): Stats = when {
 
 private val Result.stats get() = Stats(samplesCount, score, error)
 
-private data class Stats(val samplesCount: Int, val mean: Double, val error: Double)
+data class Stats(val samplesCount: Int, val mean: Double, val error: Double)
 
 private fun statsFor(samples: Iterable<DoubleArray>): Stats = TODO("John")

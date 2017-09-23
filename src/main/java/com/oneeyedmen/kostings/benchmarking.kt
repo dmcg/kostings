@@ -21,10 +21,8 @@ object benchmarking {
         val batchOptions = baseOptions.applyOptions(commandLineOptions)
         val patterns = if (commandLineOptions.includes.isNotEmpty()) commandLineOptions.includes else defaultPatterns
 
-        val results = readOrRunBenchmarks(patterns, batchOptions, resultsDir, ResultFormatType.JSON)
-
-        results.plotHistograms(imagesDir)
-        results.plotSamples(imagesDir)
+        readOrRunBenchmarks(patterns, batchOptions, resultsDir, ResultFormatType.JSON)
+            .plotIn(imagesDir)
     }
 }
 

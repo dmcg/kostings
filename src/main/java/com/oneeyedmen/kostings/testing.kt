@@ -14,27 +14,25 @@ import kotlin.reflect.jvm.jvmName
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {
-
-        val allResults = resurrectedBatches.batches.flatMap { it.results }
-        val testClasses = allResults.toBenchmarkClasses().toTypedArray()
+        val testClasses = resurrectedBatches.allResults.toBenchmarkClasses().toTypedArray()
         val testResult = runTests(*testClasses)
         System.exit(if (testResult.wasSuccessful()) 0 else 1)
     }
 }
 
 object resurrectedBatches {
-    val batches: List<Batch> = readBatches(canonicalResultsDir)
 
     fun resultNamed(benchmarkName: String): Result? = resultsByName[benchmarkName]
 
-    private val resultsByName: Map<String, Result> = batches
-        .flatMap { it.results }
+    val allResults: Collection<Result> get() = resultsByName.values
+
+    private val resultsByName: Map<String, Result> = readResults(canonicalResultsDir)
         .groupBy { it.benchmarkName }
         .mapValues { entry -> entry.value.mergeResults() }
 
 }
 
-private fun List<Result>.toBenchmarkClasses(): List<Class<*>> =
+private fun Iterable<Result>.toBenchmarkClasses(): List<Class<*>> =
     map { it.benchmarkName.toClassName() }.toSet().map { Class.forName(it) }
 
 private fun String.toClassName() = this.substringBeforeLast('.')
