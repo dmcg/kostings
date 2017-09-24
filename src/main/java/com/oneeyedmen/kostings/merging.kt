@@ -1,14 +1,28 @@
 package com.oneeyedmen.kostings
 
-fun Iterable<Result>.mergeResults(): Result = aggregateStats().let { stats ->
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
+
+fun Iterable<Result>.mergeResults(): Result =
     Result(
         benchmarkName = this.allTheSame(Result::benchmarkName),
         mode = this.allTheSame(Result::mode),
-        error = stats.error,
         units = this.allTheSame(Result::units),
-        samples = this.first().samples // as they won't be contemporaneous
+        stats = this.map { it.stats }.concatStats()
     )
+
+private fun Iterable<DescriptiveStatistics>.concatStats(): DescriptiveStatistics {
+    return this.fold(DescriptiveStatistics()) { collector, each ->
+        collector.addValuesFrom(each)
+        collector
+    }
 }
+
+private fun DescriptiveStatistics.addValuesFrom(other: DescriptiveStatistics) {
+    for (i in 0 until other.n.toInt()) {
+        this.addValue(other.getElement(i))
+    }
+}
+
 
 private fun <T> Iterable<Result>.allTheSame(property: (Result) -> T): T {
     // fold is nastier
@@ -18,16 +32,3 @@ private fun <T> Iterable<Result>.allTheSame(property: (Result) -> T): T {
     else
         return firstValue
 }
-
-private val aStatsWeenie = true
-
-private fun Iterable<Result>.aggregateStats(): Stats = when {
-    aStatsWeenie -> first().mystats
-    else -> statsFor(this.mapNotNull(Result::samples))
-}
-
-private val Result.mystats get() = Stats(samplesCount, score, error)
-
-data class Stats(val samplesCount: Long, val mean: Double, val error: Double)
-
-private fun statsFor(samples: Iterable<DoubleArray>): Stats = TODO("John")

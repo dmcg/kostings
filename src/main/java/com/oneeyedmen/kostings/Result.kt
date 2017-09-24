@@ -9,28 +9,27 @@ import org.apache.commons.math3.stat.descriptive.StatisticalSummary
 class Result(
     val benchmarkName: String,
     val mode: String,
-    val error: Double,
     val units: String,
-    val samples: DoubleArray
+    val stats: DescriptiveStatistics
 ) {
-    val stats by lazy { DescriptiveStatistics(samples) }
 
     val performanceData get() = performanceData(benchmarkName, stats)
 
     val score: Double get() = stats.mean
 
-    val samplesCount get() = stats.n
+    val samplesCount get() = stats.n.toInt()
 
-    val _error = stats.meanError(0.999)
+    fun getSample(i: Int) = stats.getElement(i)
+
+    val error = stats.meanError(0.999) // the confidence reported by JMH
 
     override fun toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
-
 }
 
 private data class EssentialData(
     val benchmarkName: String,
     val mode: String,
-    val samplesCount: Long,
+    val samplesCount: Int,
     val score: Double,
     val error: Double,
     val units: String

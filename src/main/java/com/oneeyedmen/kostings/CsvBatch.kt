@@ -18,8 +18,8 @@ fun JsonBatch.writeSamplesCSV(file: File) {
     file.bufferedWriter(Charsets.UTF_8).use { writer ->
         val printer = CSVPrinter(writer, CSVFormat.EXCEL)
         printer.printRecord(*results.map { "${it.benchmarkName} " }.toTypedArray()) // extra space makes the printer use quotes
-        for (i in results.first().samples.indices) {
-            printer.printRecord(*results.map { it.samples[i] }.toTypedArray())
-        }
+        (0 until results.first().samplesCount)
+            .map { i -> results.map { it.getSample(i) }.toTypedArray() }
+            .forEach { printer.printRecord(*it) }
     }
 }

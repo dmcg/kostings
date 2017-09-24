@@ -2,6 +2,7 @@ package com.oneeyedmen.kostings
 
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import java.io.File
 import java.io.IOException
 
@@ -9,7 +10,7 @@ data class JsonBatch(
     override val batchOptions: BatchOptions,
     override val dataFile: File,
     override val results: List<Result>)
-: Batch {
+    : Batch {
 
     override val summaryCsvFile: File by lazy {
         File.createTempFile(batchOptions.outputFilename, ".csv").apply {
@@ -30,14 +31,16 @@ fun readBatchFromJson(batchOptions: BatchOptions, jsonFile: File): Batch {
 }
 
 private fun JsonNode.toResult(): Result {
-    val metricNode = this["primaryMetric"]
-    val samples = metricNode["rawData"].asIterable().asIterable().flatten().map(JsonNode::asDouble).toDoubleArray()
-        // TODO - not a very efficient way of reading
+    val allSampleNodes = this["primaryMetric"]["rawData"].asIterable().asIterable().flatten()
     return Result(
         benchmarkName = this["benchmark"].asText(),
         mode = this["mode"].asText(),
-        error = metricNode["scoreError"].doubleValue(),
-        units = metricNode["scoreUnit"].asText(),
-        samples = samples
+        units = this["primaryMetric"]["scoreUnit"].asText(),
+        stats = allSampleNodes.collectToStats()
     )
+}
+
+private fun Iterable<JsonNode>.collectToStats(): DescriptiveStatistics = fold(DescriptiveStatistics()) { stats, node ->
+    stats.addValue(node.doubleValue())
+    stats
 }
