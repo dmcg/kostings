@@ -4,8 +4,8 @@ fun Iterable<Result>.mergeResults(): Result = aggregateStats().let { stats ->
     Result(
         benchmarkName = this.allTheSame(Result::benchmarkName),
         mode = this.allTheSame(Result::mode),
-        samplesCount = stats.samplesCount,
-        score = stats.mean,
+        _samplesCount = stats.samplesCount,
+        _score = stats.mean,
         error = stats.error,
         units = this.allTheSame(Result::units),
         samples = this.first().samples // as they won't be contemporaneous

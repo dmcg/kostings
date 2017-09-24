@@ -6,17 +6,23 @@ import org.apache.commons.math3.stat.descriptive.StatisticalSummary
 class Result(
     val benchmarkName: String,
     val mode: String,
-    val samplesCount: Int,
-    val score: Double,
+    val _samplesCount: Int,
+    val _score: Double,
     val error: Double,
     val units: String,
     val samples: DoubleArray
 ) {
+
     val performanceData by lazy {
         performanceData(benchmarkName, DescriptiveStatistics(samples))
     }
 
+    val score: Double get() = performanceData.stats.mean
+
+    val samplesCount get() = performanceData.stats.n.toInt()
+
     override fun toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
+
 }
 
 private data class EssentialData(
@@ -30,7 +36,7 @@ private data class EssentialData(
     constructor(result: Result) : this(
         benchmarkName = result.benchmarkName,
         mode = result.mode,
-        samplesCount = result.samplesCount,
+        samplesCount = result._samplesCount,
         score = result.score,
         error = result.error,
         units = result.units
