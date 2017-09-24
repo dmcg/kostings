@@ -55,11 +55,11 @@ fun probablyDifferentTo(benchmarkData: PerformanceData, alpha: Double = 0.05): M
  */
 fun probablyLessThan(benchmarkData: PerformanceData, alpha: Double = 0.05, byAFactorOf: Double = 0.0): Matcher<PerformanceData> =
         object : Matcher<PerformanceData> {
-            override val description get() = "was statistically significantly less than ${benchmarkData.description}" + if (byAFactorOf>0.0) " by a factor of ${byAFactorOf}" else ""
+            override val description get() = "was statistically significantly less than ${benchmarkData.description}" + descriptionOf(byAFactorOf)
 
             override fun invoke(actual: PerformanceData): MatchResult {
                 val factorAmount = benchmarkData.samples.average()*byAFactorOf
-                val offsetTestData = actual.samples.map { x->x+factorAmount }.toDoubleArray()
+                val offsetTestData = actual.samples.map { x -> x + factorAmount }.toDoubleArray()
                 //is the test mean actually larger?
                 if (offsetTestData.average() >= benchmarkData.samples.average())
                     //yup - so no chance this is probable
@@ -94,11 +94,11 @@ fun probablyLessThan(benchmarkData: PerformanceData, alpha: Double = 0.05, byAFa
  */
 fun probablyMoreThan(benchmarkData: PerformanceData, alpha: Double = 0.05, byAFactorOf: Double = 0.0): Matcher<PerformanceData> =
         object : Matcher<PerformanceData> {
-            override val description get() = "was statistically significantly more than ${benchmarkData.description}" + if (byAFactorOf>0.0) " by a factor of ${byAFactorOf}" else ""
+            override val description get() = "was statistically significantly more than ${benchmarkData.description}" + descriptionOf(byAFactorOf)
 
             override fun invoke(actual: PerformanceData): MatchResult {
                 val factorAmount = benchmarkData.samples.average()*byAFactorOf
-                val offsetTestData = actual.samples.map { x->x-factorAmount }.toDoubleArray()
+                val offsetTestData = actual.samples.map { x -> x - factorAmount }.toDoubleArray()
                 //is the test mean actually smaller?
                 if (offsetTestData.average() <= benchmarkData.samples.average())
                     //yup - so no chance this is probable
@@ -116,4 +116,6 @@ fun probablyMoreThan(benchmarkData: PerformanceData, alpha: Double = 0.05, byAFa
                 }
             }
         }
+
+private fun descriptionOf(byAFactoryOf: Double) = if (byAFactoryOf > 0.0) " by a factor of $byAFactoryOf" else ""
 
