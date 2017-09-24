@@ -46,14 +46,14 @@ fun probablyDifferentTo(benchmarkData: PerformanceData, alpha: Double = 0.05): M
  * Use Student's T testing to determine if there is a statistically significant negative difference between the test and benchmark samples in the [PerformanceData]s
  *
  * @param[benchmarkData] the benchmark [PerformanceData]
- * @param[alpha] the significance level, as a [Double] in percent
- *      (e.g. 0.05 represents an alpha of 5%, meaning there is a 5% chance this result is random - i.e. 95% probability that this conclusion is correct)
  * @param[byAFactorOf] the expected factor by which the test mean is smaller than the benchmark mean, as a [Double] percent of the benchmark mean
  *      (e.g. 0.10 would be 10%, implying the test mean is expected to be >10% smaller than the benchmark mean, or >90% of the benchmark mean)
+ * @param[alpha] the significance level, as a [Double] in percent
+ *      (e.g. 0.05 represents an alpha of 5%, meaning there is a 5% chance this result is random - i.e. 95% probability that this conclusion is correct)
  *
  * @return a [com.natpryce.hamkrest.Matcher] class that can be used with [com.natpryce.hamkrest.assertion] assertions
  */
-fun probablyLessThan(benchmarkData: PerformanceData, alpha: Double = 0.05, byAFactorOf: Double = 0.0): Matcher<PerformanceData> =
+fun probablyLessThan(benchmarkData: PerformanceData, byAFactorOf: Double = 0.0, alpha: Double = 0.05): Matcher<PerformanceData> =
         object : Matcher<PerformanceData> {
             override val description get() = "was statistically significantly less than ${benchmarkData.description}" + descriptionOf(byAFactorOf)
 
@@ -85,14 +85,14 @@ fun probablyLessThan(benchmarkData: PerformanceData, alpha: Double = 0.05, byAFa
  * Use Student's T testing to determine if there is a statistically significant positive difference between the test and benchmark samples in the [PerformanceData]s
  *
  * @param[benchmarkData] the benchmark [PerformanceData]
- * @param[alpha] the significance level, as a [Double] in percent
- *      (e.g. 0.05 represents an alpha of 5%, meaning there is a 5% chance this result is random - i.e. 95% probability that this conclusion is correct)
  * @param[byAFactorOf] the expected factor by which the test mean is greater than the benchmark mean, as a [Double] percent of the benchmark mean
  *      (e.g. 0.10 would be 10%, implying the test mean is expected to be >10% larger than the benchmark mean, or >110% of the benchmark mean)
+ * @param[alpha] the significance level, as a [Double] in percent
+ *      (e.g. 0.05 represents an alpha of 5%, meaning there is a 5% chance this result is random - i.e. 95% probability that this conclusion is correct)
  *
  * @return a [com.natpryce.hamkrest.Matcher] class that can be used with [com.natpryce.hamkrest.assertion] assertions
  */
-fun probablyMoreThan(benchmarkData: PerformanceData, alpha: Double = 0.05, byAFactorOf: Double = 0.0): Matcher<PerformanceData> =
+fun probablyMoreThan(benchmarkData: PerformanceData, byAFactorOf: Double = 0.0, alpha: Double = 0.05): Matcher<PerformanceData> =
         object : Matcher<PerformanceData> {
             override val description get() = "was statistically significantly more than ${benchmarkData.description}" + descriptionOf(byAFactorOf)
 
