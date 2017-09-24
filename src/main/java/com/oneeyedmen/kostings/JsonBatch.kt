@@ -36,10 +36,8 @@ private fun JsonNode.toResult(): Result {
     return Result(
         benchmarkName = this["benchmark"].asText(),
         mode = this["mode"].asText(),
-        _score = metricNode["score"].doubleValue(),
         error = metricNode["scoreError"].doubleValue(),
         units = metricNode["scoreUnit"].asText(),
-        _samplesCount = samples.size,
         samples = samples
     )
 }

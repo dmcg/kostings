@@ -4,8 +4,6 @@ fun Iterable<Result>.mergeResults(): Result = aggregateStats().let { stats ->
     Result(
         benchmarkName = this.allTheSame(Result::benchmarkName),
         mode = this.allTheSame(Result::mode),
-        _samplesCount = stats.samplesCount,
-        _score = stats.mean,
         error = stats.error,
         units = this.allTheSame(Result::units),
         samples = this.first().samples // as they won't be contemporaneous
@@ -30,6 +28,6 @@ private fun Iterable<Result>.aggregateStats(): Stats = when {
 
 private val Result.stats get() = Stats(samplesCount, score, error)
 
-data class Stats(val samplesCount: Int, val mean: Double, val error: Double)
+data class Stats(val samplesCount: Long, val mean: Double, val error: Double)
 
 private fun statsFor(samples: Iterable<DoubleArray>): Stats = TODO("John")
