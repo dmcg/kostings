@@ -60,10 +60,10 @@ private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (Perfo
 
         override fun invoke(actual: KFunction<*>): MatchResult {
             val actualResult = resultFor(actual)
-            return delegateMatcher.invoke(actualResult.asPerformanceData())
+            return delegateMatcher.invoke(actualResult.performanceData)
         }
 
-        private val delegateMatcher by lazy { comparator(resultFor(benchmarkFunction).asPerformanceData()) }
+        private val delegateMatcher by lazy { comparator(resultFor(benchmarkFunction).performanceData) }
     }
 
 private fun resultFor(method: KFunction<*>) =

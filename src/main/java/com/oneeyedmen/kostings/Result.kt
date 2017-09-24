@@ -12,7 +12,9 @@ class Result(
     val units: String,
     val samples: DoubleArray? = null
 ) {
-    fun asPerformanceData() = performanceData(benchmarkName, DescriptiveStatistics(samples!!))
+    val performanceData by lazy {
+        performanceData(benchmarkName, DescriptiveStatistics(samples!!))
+    }
 
     override fun toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
 }
