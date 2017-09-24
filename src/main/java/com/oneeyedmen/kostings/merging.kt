@@ -22,11 +22,11 @@ private fun <T> Iterable<Result>.allTheSame(property: (Result) -> T): T {
 private val aStatsWeenie = true
 
 private fun Iterable<Result>.aggregateStats(): Stats = when {
-    aStatsWeenie -> first().stats
+    aStatsWeenie -> first().mystats
     else -> statsFor(this.mapNotNull(Result::samples))
 }
 
-private val Result.stats get() = Stats(samplesCount, score, error)
+private val Result.mystats get() = Stats(samplesCount, score, error)
 
 data class Stats(val samplesCount: Long, val mean: Double, val error: Double)
 
