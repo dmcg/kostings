@@ -21,36 +21,24 @@ object benchmarking {
         val batchOptions = baseOptions.applyOptions(commandLineOptions)
         val patterns = if (commandLineOptions.includes.isNotEmpty()) commandLineOptions.includes else defaultPatterns
 
-        readOrRunBenchmarks(patterns, batchOptions, resultsDir, ResultFormatType.JSON)
+        readOrRunBenchmarks(patterns, batchOptions, resultsDir)
             .plotIn(imagesDir)
     }
 }
 
-fun readOrRunBenchmarks(patterns: List<String>, batchOptions: BatchOptions, outputDir: File, resultFormatType: ResultFormatType) =
-    patterns.map { readOrRunBenchmark(batchOptions.copy(pattern = it), outputDir, resultFormatType) }
+fun readOrRunBenchmarks(patterns: List<String>, batchOptions: BatchOptions, outputDir: File) =
+    patterns.map { readOrRunBenchmark(batchOptions.copy(pattern = it), outputDir) }
 
-fun readOrRunBenchmark(batchOptions: BatchOptions, outputDir: File, resultFormatType: ResultFormatType): Batch {
-    val file = outputDir.resolve(batchOptions.outputFilename + resultFormatType.toExtension())
+fun readOrRunBenchmark(batchOptions: BatchOptions, outputDir: File): Batch {
+    val file = outputDir.resolve(batchOptions.outputFilename + ".json")
     if (!file.isFile)
-        runBenchmark(batchOptions, file, resultFormatType)
-    return resultFormatType.readBatchFromFile(batchOptions, file)
+        runBenchmark(batchOptions, file)
+    return readBatchFromJson(batchOptions, file)
 }
 
-private fun ResultFormatType.readBatchFromFile(batchOptions: BatchOptions, file: File) = when (this) {
-    ResultFormatType.CSV-> readBatchFromCsv(batchOptions, file)
-    ResultFormatType.JSON -> readBatchFromJson(batchOptions, file)
-    else -> throw IllegalArgumentException("Unsupported result format type $this")
-}
-
-private fun ResultFormatType.toExtension() = when (this) {
-    ResultFormatType.CSV-> ".csv"
-    ResultFormatType.JSON -> ".json"
-    else -> IllegalArgumentException("Unsupported result format type $this")
-}
-
-private fun runBenchmark(batchOptions: BatchOptions, outputFile: File, resultFormatType: ResultFormatType) {
+private fun runBenchmark(batchOptions: BatchOptions, outputFile: File) {
     outputFile.parentFile.mkdirs()
-    val optionsWithOutput = batchOptions.toOptions().result(outputFile.absolutePath).resultFormat(resultFormatType).build()
+    val optionsWithOutput = batchOptions.toOptions().result(outputFile.absolutePath).resultFormat(ResultFormatType.JSON).build()
     Runner(optionsWithOutput).run()
 }
 

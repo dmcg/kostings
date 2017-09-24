@@ -10,10 +10,10 @@ class Result(
     val score: Double,
     val error: Double,
     val units: String,
-    val samples: DoubleArray? = null
+    val samples: DoubleArray
 ) {
     val performanceData by lazy {
-        performanceData(benchmarkName, DescriptiveStatistics(samples!!))
+        performanceData(benchmarkName, DescriptiveStatistics(samples))
     }
 
     override fun toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")

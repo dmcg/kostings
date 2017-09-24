@@ -10,7 +10,7 @@ class StatsConsistencyTests {
     @Test
     fun `check JMH reported stats`() {
         readResults(resultsDir).forEach {
-            assertEquals("For ${it.benchmarkName}", it.score, it.samples!!.mean(), it.score * 0.001)
+            assertEquals("For ${it.benchmarkName}", it.score, it.samples.mean(), it.score * 0.001)
         }
     }
 }
