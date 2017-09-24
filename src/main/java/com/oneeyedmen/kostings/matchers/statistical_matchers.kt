@@ -3,6 +3,8 @@ package com.oneeyedmen.kostings.matchers
 import com.natpryce.hamkrest.MatchResult
 import com.natpryce.hamkrest.Matcher
 import com.oneeyedmen.kostings.PerformanceData
+import org.apache.commons.math3.stat.descriptive.StatisticalSummary
+import org.apache.commons.math3.stat.descriptive.StatisticalSummaryValues
 import org.apache.commons.math3.stat.inference.TestUtils.tTest
 
 /**
@@ -55,12 +57,11 @@ fun probablyLessThan(benchmarkData: PerformanceData, byAFactorOf: Double = 0.0, 
             override fun invoke(actual: PerformanceData): MatchResult {
                 val benchmarkMean = benchmarkData.stats.mean
                 val factorAmount = benchmarkMean * byAFactorOf
-                val offsetStats = OffsetStatistics(actual.stats, factorAmount)
-                val offsetMean = offsetStats.mean
+                val offsetStats = actual.stats.offsetBy(factorAmount)
                 //is the test mean actually larger?
-                if (offsetMean >= benchmarkMean)
+                if (offsetStats.mean >= benchmarkMean)
                     //yup - so no chance this is probable
-                    return MatchResult.Mismatch((if (byAFactorOf>0.0) "the offset mean was larger: offset" else "the mean was larger:") + " test mean[${offsetMean}] > benchmark mean[$benchmarkMean]")
+                    return MatchResult.Mismatch((if (byAFactorOf>0.0) "the offset mean was larger: offset" else "the mean was larger:") + " test mean[${offsetStats.mean}] > benchmark mean[$benchmarkMean]")
                 else {
                     //t-Test the null-Hypothesis is that test mean-byAFactorOf*benchmark mean > benchmark mean
                     val rejectNullHypothesis = tTest(benchmarkData.stats,offsetStats, alpha * 2) //one-sided test
@@ -96,12 +97,11 @@ fun probablyMoreThan(benchmarkData: PerformanceData, byAFactorOf: Double = 0.0, 
             override fun invoke(actual: PerformanceData): MatchResult {
                 val benchmarkMean = benchmarkData.stats.mean
                 val factorAmount = benchmarkMean * byAFactorOf
-                val offsetStats = OffsetStatistics(actual.stats, -factorAmount)
-                val offsetMean = offsetStats.mean
+                val offsetStats = actual.stats.offsetBy(-factorAmount)
                 //is the test mean actually smaller?
-                if (offsetMean <= benchmarkMean)
+                if (offsetStats.mean <= benchmarkMean)
                     //yup - so no chance this is probable
-                    return MatchResult.Mismatch((if (byAFactorOf>0.0) "the offset mean was smaller: offset" else "the mean was smaller:") + " test mean[${offsetMean}] < benchmark mean[${benchmarkMean}]")
+                    return MatchResult.Mismatch((if (byAFactorOf>0.0) "the offset mean was smaller: offset" else "the mean was smaller:") + " test mean[${offsetStats.mean}] < benchmark mean[${benchmarkMean}]")
                 else {
                     //t-Test the null-Hypothesis is that test mean-byAFactorOf*benchmark mean < benchmark mean
                     val rejectNullHypothesis = tTest(benchmarkData.stats,offsetStats, alpha * 2) //one-sided test
@@ -118,3 +118,11 @@ fun probablyMoreThan(benchmarkData: PerformanceData, byAFactorOf: Double = 0.0, 
 
 private fun descriptionOf(byAFactorOf: Double) = if (byAFactorOf > 0.0) " by a factor of $byAFactorOf" else ""
 
+private fun StatisticalSummary.offsetBy(offset: Double) = StatisticalSummaryValues(
+    mean + offset,
+    variance,
+    n,
+    max + offset,
+    min + offset,
+    sum + n * offset
+)
