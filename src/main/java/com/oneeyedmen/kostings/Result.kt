@@ -21,7 +21,7 @@ class Result(
 
     val samplesCount get() = stats.n
 
-    val _error = stats.meanCI(0.01)
+    val _error = stats.meanError(0.999)
 
     override fun toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
 
@@ -52,13 +52,10 @@ private fun performanceData(description: String, stats: StatisticalSummary): Per
     }
 }
 
-// see https://stackoverflow.com/questions/5564621/using-apache-commons-math-to-determine-confidence-intervals
-private fun StatisticalSummary.meanCI(level: Double): Double {
-        // Create T Distribution with N-1 degrees of freedom
+// copied from JMH AbstractStatistics
+fun StatisticalSummary.meanError(confidence: Double): Double {
+    if (n <= 2) return java.lang.Double.NaN
     val tDist = TDistribution((n - 1).toDouble())
-    // Calculate critical value
-    val critVal = tDist.inverseCumulativeProbability(1.0 - (1 - level) / 2)
-    // Calculate confidence interval
-    return critVal * standardDeviation / Math.sqrt(n.toDouble())
-
+    val a = tDist.inverseCumulativeProbability(1 - (1 - confidence) / 2)
+    return a * standardDeviation / Math.sqrt(n.toDouble())
 }
