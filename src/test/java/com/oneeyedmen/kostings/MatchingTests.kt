@@ -54,10 +54,11 @@ class MatchingTests {
 
     @Test
     fun shouldBeProbablyLessThan() {
-        val benchmarkData = TestPerformanceData(description = "benchmark data", samples = DoubleArray(30) { rng.nextGaussian() + 5 })
-        val resultData = TestPerformanceData(description = "result data", samples = DoubleArray(50) { rng.nextGaussian() })
+        //data chosen to ensure one-sided test works using correct alpha
+        val benchmarkData = TestPerformanceData(description = "benchmark data", samples = doubleArrayOf(1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0))
+        val resultData = TestPerformanceData(description = "result data", samples = benchmarkData.samples.map { x -> x - 2.5 }.toDoubleArray())
 
-        assertThat("should not be greater than",resultData, probablyLessThan(benchmarkData))
+        assertThat("should be less than",resultData, probablyLessThan(benchmarkData))
     }
 
     @Test(expected = AssertionError::class)
@@ -65,7 +66,7 @@ class MatchingTests {
         val benchmarkData = TestPerformanceData(description = "benchmark data", samples = DoubleArray(30) { rng.nextGaussian() })
         val resultData = TestPerformanceData(description = "result data", samples = DoubleArray(50) { rng.nextGaussian() + 5 })
 
-        assertThat("should not be greater than",resultData, probablyLessThan(benchmarkData))
+        assertThat("should not be less than",resultData, probablyLessThan(benchmarkData))
     }
 
     @Test(expected = AssertionError::class)
@@ -85,10 +86,11 @@ class MatchingTests {
 
     @Test
     fun shouldBeProbablyMoreThan() {
-        val benchmarkData = TestPerformanceData(description = "benchmark data", samples = DoubleArray(30) { rng.nextGaussian() + 1 })
-        val resultData = TestPerformanceData(description = "result data", samples = DoubleArray(50) { rng.nextGaussian() + 2 })
+        //data chosen to ensure one-sided test works using correct alpha
+        val benchmarkData = TestPerformanceData(description = "benchmark data", samples = doubleArrayOf(1.0,2.0,3.0,4.0,5.0,6.0,7.0,8.0,9.0,10.0))
+        val resultData = TestPerformanceData(description = "result data", samples = benchmarkData.samples.map { x -> x + 2.5 }.toDoubleArray())
 
-        assertThat("should not be greater than",resultData, probablyMoreThan(benchmarkData))
+        assertThat("should be greater than",resultData, probablyMoreThan(benchmarkData))
     }
 
     @Test(expected = AssertionError::class)
