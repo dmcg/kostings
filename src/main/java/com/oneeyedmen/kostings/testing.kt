@@ -45,13 +45,13 @@ fun runTests(vararg testClasses: Class<*>): org.junit.runner.Result =
     }.run(*testClasses)
 
 
-fun probablyDifferentTo(benchmarkFunction: KFunction<*>, alpha: Double = 0.95) =
+§fun probablyDifferentTo(benchmarkFunction: KFunction<*>, alpha: Double = 0.05) =
     benchmarkMatcher(benchmarkFunction) { probablyDifferentTo(it, alpha) }
 
-fun probablyFasterThan(benchmarkFunction: KFunction<*>, alpha: Double = 0.95, byAFactorOf: Double = 0.0) =
+fun probablyFasterThan(benchmarkFunction: KFunction<*>, alpha: Double = 0.05, byAFactorOf: Double = 0.0) =
     benchmarkMatcher(benchmarkFunction) { probablyMoreThan(it, alpha, byAFactorOf) }
 
-fun probablySlowerThan(benchmarkFunction: KFunction<*>, alpha: Double = 0.95, byAFactorOf: Double = 0.0) =
+fun probablySlowerThan(benchmarkFunction: KFunction<*>, alpha: Double = 0.05, byAFactorOf: Double = 0.0) =
     benchmarkMatcher(benchmarkFunction) { probablyLessThan(it, alpha, byAFactorOf) }
 
 private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (PerformanceData) -> Matcher<PerformanceData>) =

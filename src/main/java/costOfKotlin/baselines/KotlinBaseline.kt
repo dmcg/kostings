@@ -16,8 +16,8 @@ open class KotlinBaseline {
 
     @Test
     fun `java is quicker but not by much`() {
-        assertThat(JavaBaseline::baseline, probablyFasterThan(this::baseline, 0.05, byAFactorOf = 0.01))
-        assertThat(JavaBaseline::baseline, ! probablyFasterThan(this::baseline, 0.05, byAFactorOf = 0.05))
+        assertThat(JavaBaseline::baseline, probablyFasterThan(this::baseline, byAFactorOf = 0.01))
+        assertThat(JavaBaseline::baseline, ! probablyFasterThan(this::baseline, byAFactorOf = 0.05))
     }
 
 }
