@@ -1,5 +1,8 @@
 package com.oneeyedmen.kostings
 
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
+import org.apache.commons.math3.stat.descriptive.StatisticalSummary
+
 class Result(
     val benchmarkName: String,
     val mode: String,
@@ -9,7 +12,7 @@ class Result(
     val units: String,
     val samples: DoubleArray? = null
 ) {
-    fun asPerformanceData() = performanceData(benchmarkName, samples!!)
+    fun asPerformanceData() = performanceData(benchmarkName, DescriptiveStatistics(samples!!))
 
     override fun toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
 }
@@ -32,9 +35,9 @@ private data class EssentialData(
     )
 }
 
-private fun performanceData(description: String, samples: DoubleArray): PerformanceData {
+private fun performanceData(description: String, stats: StatisticalSummary): PerformanceData {
     return object : PerformanceData {
         override val description = description
-        override val samples = samples
+        override val stats = stats
     }
 }
