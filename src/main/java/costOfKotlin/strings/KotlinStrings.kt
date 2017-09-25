@@ -1,8 +1,7 @@
 package costOfKotlin.strings
 
 import com.natpryce.hamkrest.assertion.assertThat
-import com.oneeyedmen.kostings.probablyFasterThan
-import org.junit.Ignore
+import com.oneeyedmen.kostings.probablyDifferentTo
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.infra.Blackhole
@@ -29,9 +28,9 @@ open class KotlinStrings {
     fun `but not this`() = "$hello $world"
 
 
-    @Test @Ignore("Fails - run 1 shows Kotlin faster - try amalgamating runs for better precision")
-    fun `java is quicker but not by much`() {
-        assertThat(JavaStrings::concat, probablyFasterThan(this::concat))
+    @Test
+    fun `cannot detect the difference between Java and Kotlin`() {
+        assertThat(JavaStrings::concat, ! probablyDifferentTo(this::concat))
     }
 
 
