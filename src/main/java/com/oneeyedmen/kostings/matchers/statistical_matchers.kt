@@ -25,14 +25,7 @@ fun probablyDifferentTo(benchmarkData: PerformanceData, alpha: Double = 0.05): M
             override fun invoke(actual: PerformanceData): MatchResult {
                 //the null-Hypothesis is that test == benchmark
                 val actualAlpha = tTest(benchmarkData.stats, actual.stats)
-
-                return if (actualAlpha < alpha) {
-                    //so we can say test mean != benchmark mean, with a probability of alpha% that we are wrong (i.e. (1-alpha)% confidence)
-                    MatchResult.Match
-                } else {
-                    //so we can't say it's different
-                    MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong ${actualAlpha} is greater than required probability alpha[${alpha}]")
-                }
+                return matchIf(actualAlpha, isLessThan = alpha)
             }
         }
 
@@ -65,13 +58,7 @@ fun probablyLessThan(benchmarkData: PerformanceData, byAFactorOf: Double = 0.0, 
                 else {
                     //t-Test the null-Hypothesis is that test mean-byAFactorOf*benchmark mean > benchmark mean
                     val actualAlpha = tTest(benchmarkData.stats, offsetStats) / 2 //one-sided tTest so /2
-
-                    return if (actualAlpha < alpha) {
-                        //so we can say that test mean-byAFactorOf*benchmark mean < benchmark mean, with a probability of alpha% that we are wrong (i.e. (1-alpha)% confidence)
-                        MatchResult.Match
-                    } else
-                        //so we can't say that it is smaller
-                        MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong ${actualAlpha} is greater than required probability alpha[${alpha}]")
+                    return matchIf(actualAlpha, isLessThan = alpha)
                 }
             }
         }
@@ -105,19 +92,25 @@ fun probablyMoreThan(benchmarkData: PerformanceData, byAFactorOf: Double = 0.0, 
                 else {
                     //t-Test the null-Hypothesis is that test mean-byAFactorOf*benchmark mean < benchmark mean
                     val actualAlpha = tTest(benchmarkData.stats, offsetStats) / 2 //one-sided tTest so /2
-
-                    return if (actualAlpha < alpha) {
-                        //so we can say that test mean-byAFactorOf*benchmark mean > benchmark mean, with a probability of alpha% that we are wrong (i.e. (1-alpha)% confidence)
-                        MatchResult.Match
-                    } else {
-                        //so we can't say that it is bigger
-                        MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong ${actualAlpha} is greater than required probability alpha[${alpha}]")
-                    }
+                    return matchIf(actualAlpha, isLessThan = alpha)
                 }
             }
         }
 
 private fun descriptionOf(byAFactorOf: Double) = if (byAFactorOf > 0.0) " by a factor of $byAFactorOf" else ""
+
+private fun matchIf(actualAlpha: Double, isLessThan: Double) =
+    if (actualAlpha < isLessThan) {
+        // we can say test mean != benchmark mean, with a probability of alpha% that we are wrong (i.e. (1 - alpha)% confidence)
+        MatchResult.Match
+    } else {
+        // we can't say it's different
+        alphaMismatch(actualAlpha, isLessThan)
+    }
+
+
+private fun alphaMismatch(actualAlpha: Double, requiredAlpha: Double) =
+    MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong $actualAlpha is greater than required probability alpha[$requiredAlpha]")
 
 private fun StatisticalSummary.offsetBy(offset: Double) = StatisticalSummaryValues(
     mean + offset,
