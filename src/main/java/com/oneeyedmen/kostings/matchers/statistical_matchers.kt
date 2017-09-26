@@ -24,14 +24,14 @@ fun probablyDifferentTo(benchmarkData: PerformanceData, alpha: Double = 0.05): M
 
             override fun invoke(actual: PerformanceData): MatchResult {
                 //the null-Hypothesis is that test == benchmark
-                val rejectNullHypothesis = tTest(benchmarkData.stats,actual.stats,alpha)
+                val actualAlpha = tTest(benchmarkData.stats, actual.stats)
 
-                return if (rejectNullHypothesis) {
+                return if (actualAlpha < alpha) {
                     //so we can say test mean != benchmark mean, with a probability of alpha% that we are wrong (i.e. (1-alpha)% confidence)
                     MatchResult.Match
                 } else {
                     //so we can't say it's different
-                    MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong is more than ${alpha}")
+                    MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong ${actualAlpha} is greater than required probability alpha[${alpha}]")
                 }
             }
         }
@@ -64,14 +64,14 @@ fun probablyLessThan(benchmarkData: PerformanceData, byAFactorOf: Double = 0.0, 
                     return MatchResult.Mismatch((if (byAFactorOf>0.0) "the offset mean was larger: offset" else "the mean was larger:") + " test mean[${offsetStats.mean}] > benchmark mean[$benchmarkMean]")
                 else {
                     //t-Test the null-Hypothesis is that test mean-byAFactorOf*benchmark mean > benchmark mean
-                    val rejectNullHypothesis = tTest(benchmarkData.stats,offsetStats, alpha * 2) //one-sided test
+                    val actualAlpha = tTest(benchmarkData.stats, offsetStats) / 2 //one-sided tTest so /2
 
-                    return if (rejectNullHypothesis) {
+                    return if (actualAlpha < alpha) {
                         //so we can say that test mean-byAFactorOf*benchmark mean < benchmark mean, with a probability of alpha% that we are wrong (i.e. (1-alpha)% confidence)
                         MatchResult.Match
                     } else
                         //so we can't say that it is smaller
-                        MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong is more than ${alpha}")
+                        MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong ${actualAlpha} is greater than required probability alpha[${alpha}]")
                 }
             }
         }
@@ -104,14 +104,15 @@ fun probablyMoreThan(benchmarkData: PerformanceData, byAFactorOf: Double = 0.0, 
                     return MatchResult.Mismatch((if (byAFactorOf>0.0) "the offset mean was smaller: offset" else "the mean was smaller:") + " test mean[${offsetStats.mean}] < benchmark mean[${benchmarkMean}]")
                 else {
                     //t-Test the null-Hypothesis is that test mean-byAFactorOf*benchmark mean < benchmark mean
-                    val rejectNullHypothesis = tTest(benchmarkData.stats,offsetStats, alpha * 2) //one-sided test
+                    val actualAlpha = tTest(benchmarkData.stats, offsetStats) / 2 //one-sided tTest so /2
 
-                    return if (rejectNullHypothesis) {
+                    return if (actualAlpha < alpha) {
                         //so we can say that test mean-byAFactorOf*benchmark mean > benchmark mean, with a probability of alpha% that we are wrong (i.e. (1-alpha)% confidence)
                         MatchResult.Match
-                    } else
+                    } else {
                         //so we can't say that it is bigger
-                        MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong is more than ${alpha}")
+                        MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong ${actualAlpha} is greater than required probability alpha[${alpha}]")
+                    }
                 }
             }
         }
