@@ -88,7 +88,7 @@ fun probablyMoreThan(benchmarkData: PerformanceData, byAFactorOf: Double = 0.0, 
                 //is the test mean actually smaller?
                 if (offsetStats.mean <= benchmarkMean)
                     //yup - so no chance this is probable
-                    return MatchResult.Mismatch((if (byAFactorOf>0.0) "the offset mean was smaller: offset" else "the mean was smaller:") + " test mean[${offsetStats.mean}] < benchmark mean[${benchmarkMean}]")
+                    return MatchResult.Mismatch((if (byAFactorOf>0.0) "the offset mean was smaller: offset" else "the mean was smaller:") + " test mean[${offsetStats.mean}] < benchmark mean[$benchmarkMean]")
                 else {
                     //t-Test the null-Hypothesis is that test mean-byAFactorOf*benchmark mean < benchmark mean
                     val actualAlpha = tTest(benchmarkData.stats, offsetStats) / 2 //one-sided tTest so /2
@@ -105,12 +105,9 @@ private fun matchIf(actualAlpha: Double, isLessThan: Double) =
         MatchResult.Match
     } else {
         // we can't say it's different
-        alphaMismatch(actualAlpha, isLessThan)
+        MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong $actualAlpha is greater than required probability alpha[$isLessThan]")
     }
 
-
-private fun alphaMismatch(actualAlpha: Double, requiredAlpha: Double) =
-    MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong $actualAlpha is greater than required probability alpha[$requiredAlpha]")
 
 private fun StatisticalSummary.offsetBy(offset: Double) = StatisticalSummaryValues(
     mean + offset,
