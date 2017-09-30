@@ -46,6 +46,7 @@ open class Mapping {
 
     @Benchmark
     fun indexedMap_on_linked_list(listState: ListState) : List<String> {
+        // the nodes will not be scattered in memory
         return listState.linkedListOfStrings.indexedMap { it }
     }
 
