@@ -41,9 +41,39 @@ fun hasAnomalousData(data: DoubleArray, alpha: Double = 0.01, chunkSize: Int  = 
 }
 
 
-fun rejectAnomalousData(data: DoubleArray, alpha: Double = 0.01, chunkSize: Int  = 50): DoubleArray {
-    //val chunkedData = data.asList().batch(chunkSize).map { x -> x.toDoubleArray() }
-    return data
+class RejectingTooManyValues(msg: String? = null) : AssertionError(msg)
+
+fun rejectAnomalousData(data: DoubleArray, alpha: Double = 0.01, chunkSize: Int  = 50, maximumRejectionFactor: Double = 0.10): DoubleArray {
+    val chunkedData = data.asList().batch(chunkSize).map { x -> x.toDoubleArray() }
+    /*
+    The method here is based on the principle that there is a mean and if the benchmarking process gets interrupted
+    this will cause a notch in the data (positive or negative depending on the metric) which can be rejected
+     */
+
+    //first let's find the "mode" mean by using ANOVA testing of chunks
+    val meanBuckets = arrayListOf<MutableList<DoubleArray>>()
+    for (chunk in chunkedData) {
+        var foundMeanBucket = false
+        for (bucket in meanBuckets) {
+            val testChunks = bucket + listOf(chunk)
+            if (!TestUtils.oneWayAnovaTest(testChunks, alpha)) {
+                bucket.add(chunk)
+                foundMeanBucket = true
+            }
+        }
+        if (!foundMeanBucket) meanBuckets.add(mutableListOf(chunk))
+    }
+
+    //get the mode values
+    meanBuckets.sortByDescending { it.size }
+    val modeValues = meanBuckets[0].fold(doubleArrayOf(), { a,b -> a+b })
+
+    //check to see if we haven't thrown away too many values
+    val rejectionFactor = 1.0 - (modeValues.size / data.size.toDouble())
+    if (rejectionFactor > maximumRejectionFactor) throw RejectingTooManyValues("Trying to reject ${rejectionFactor*100}% of the values which is greater than the maximum acceptable amount of ${maximumRejectionFactor*100}%")
+
+    //ok
+    return modeValues
 }
 
 
