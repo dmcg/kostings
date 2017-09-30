@@ -52,6 +52,7 @@ open class KotlinPrimitives {
 
     @Test
     fun `parameter null check is undetectable`() {
+        assertThat(JavaPrimitives::_1_baseline, probablyFasterThan(this::_1_baseline))
         assertThat(JavaPrimitives::_1_baseline, ! probablyFasterThan(this::_1_baseline))
     }
 
@@ -62,7 +63,7 @@ open class KotlinPrimitives {
 
     @Test
     fun `kotlin sum is undetectable`() {
-        assertThat(this::_1_baseline, ! probablyFasterThan(this::_2_sum))
+        assertThat(this::_1_baseline, probablyFasterThan(this::_2_sum))
     }
 
     @Test

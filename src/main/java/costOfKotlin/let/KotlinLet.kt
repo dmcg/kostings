@@ -1,5 +1,8 @@
 package costOfKotlin.let
 
+import com.natpryce.hamkrest.assertion.assertThat
+import com.oneeyedmen.kostings.probablyDifferentTo
+import com.oneeyedmen.kostings.probablyFasterThan
 import costOfKotlin.primitives.IntState
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
@@ -20,5 +23,8 @@ open class KotlinLet {
     }
 
     @Test
-    fun noop() {}
+    fun test() {
+        assertThat(this::baseline, ! probablyFasterThan(this::let))
+        assertThat(this::baseline, ! probablyDifferentTo(this::let))
+    }
 }
