@@ -1,25 +1,27 @@
 package costOfKotlin.mapping
 
+import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.oneeyedmen.kostings.probablyDifferentTo
 import com.oneeyedmen.kostings.probablyFasterThan
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
+import kotlin.reflect.KFunction
 
 open class Mapping {
 
     @Benchmark
-    fun baseline(listState: ListState) : List<String> {
+    fun baseline_indexed_arrayList(listState: ListState) : List<String> {
         val list = listState.arrayListOfStrings
         val result = ArrayList<String>(list.size)
         for (i in 0 until result.size) {
-            result.add(list.get(i))
+            result.add(list[i])
         }
         return result
     }
 
     @Benchmark
-    fun baseline_iterator(listState: ListState) : List<String> {
+    fun baseline_iterator_arrayList(listState: ListState) : List<String> {
         val list = listState.arrayListOfStrings
         val result = ArrayList<String>(list.size)
         val iterator = list.iterator()
@@ -30,57 +32,58 @@ open class Mapping {
     }
 
     @Benchmark
-    fun map_identity(listState: ListState) : List<String> {
+    fun map_arrayList(listState: ListState) : List<String> {
         return listState.arrayListOfStrings.map { it }
     }
 
     @Benchmark
-    fun map_identityFunction(listState: ListState) : List<String> {
-        return listState.arrayListOfStrings.map(identity())
+    fun map_linkedList(listState: ListState) : List<String> {
+        return listState.linkedListOfStrings.map { it }
     }
 
     @Benchmark
-    fun indexedMap(listState: ListState) : List<String> {
+    fun indexedMap_arrayList(listState: ListState) : List<String> {
         return listState.arrayListOfStrings.indexedMap { it }
     }
 
     @Benchmark
-    fun indexedMap_on_linked_list(listState: ListState) : List<String> {
-        // the nodes will not be scattered in memory
+    fun indexedMap_linkedList(listState: ListState) : List<String> {
         return listState.linkedListOfStrings.indexedMap { it }
     }
 
     @Benchmark
-    fun specialisedMap(listState: ListState) : List<String> {
+    fun specialisedMap_arrayList(listState: ListState) : List<String> {
         return listState.arrayListOfStrings.specialisedMap { it }
     }
 
     @Benchmark
-    fun specialisedMap_on_linked_list(listState: ListState) : List<String> {
+    fun specialisedMap_linkedList(listState: ListState) : List<String> {
         return listState.linkedListOfStrings.specialisedMap { it }
     }
 
-    @Benchmark
-    fun map_on_linked_list(listState: ListState) : List<String> {
-        return listState.linkedListOfStrings.map{ it }
+    @Test
+    fun `use of iterator rather than indexing is crippling`() {
+        assertThat(this::baseline_indexed_arrayList, probablyFasterByBetween(this::baseline_iterator_arrayList, 25.0, 30.0))
     }
 
     @Test
-    fun `use of iterator is crippling`() {
-        assertThat(this::baseline, probablyFasterThan(this::baseline_iterator, byAFactorOf = 25.0))
-        assertThat(this::baseline, ! probablyFasterThan(this::baseline_iterator, byAFactorOf = 30.0))
+    fun `indexedMap is much better for both lists`() {
+        assertThat(this::indexedMap_arrayList, probablyFasterByBetween(this::map_arrayList, 30.0, 35.0))
+
+        assertThat(this::indexedMap_linkedList, probablyFasterByBetween(this::map_linkedList, 30.0, 35.0))
+            // This may be a bit unfair because of all nodes are created at the same time
     }
 
     @Test
-    fun `we could do so much better`() {
-        assertThat(this::baseline, ! probablyFasterThan(this::specialisedMap, byAFactorOf = 0.05))
-        assertThat(this::map_on_linked_list, ! probablyDifferentTo(this::specialisedMap_on_linked_list))
+    fun `specialised map can choose`() {
+        assertThat(this::specialisedMap_arrayList, probablyFasterByBetween(this::map_arrayList, 30.0, 35.0))
+        assertThat(this::map_linkedList, ! probablyDifferentTo(this::specialisedMap_linkedList))
     }
 
 }
 
-@Suppress("NOTHING_TO_INLINE")
-inline fun<T> identity(): (T) -> T = { it }
+fun probablyFasterByBetween(reference: KFunction<*>, minFactor: Double, maxFactor: Double) =
+    probablyFasterThan(reference, byAFactorOf = minFactor) and ! probablyFasterThan(reference, byAFactorOf = maxFactor)
 
 inline fun <T, R> List<T>.indexedMap(transform: (T) -> R): List<R> {
     val result = ArrayList<R>(this.size)
