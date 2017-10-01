@@ -34,17 +34,10 @@ private fun <T> Iterable<Result>.allTheSame(property: (Result) -> T): T {
         return firstValue
 }
 
-fun hasAnomalousData(data: DoubleArray, alpha: Double = 0.01, chunkSize: Int  = 50): Boolean {
-        val chunkedData = data.asList().batch(chunkSize).map { x -> x.toDoubleArray() }
-        //can you reject the hypothesis that the chunks are the same w.r.t mean, and only have an alpha% chance of being wrong?
-        return TestUtils.oneWayAnovaTest(chunkedData, alpha)
-}
 
-
-class RejectingTooManyValues(msg: String? = null) : AssertionError(msg)
+class RejectingTooManyValues(msg: String? = null) : IllegalStateException(msg)
 
 fun rejectAnomalousData(data: DoubleArray, alpha: Double = 0.01, chunkSize: Int  = 50, maximumRejectionFactor: Double = 0.10): DoubleArray {
-    val chunkedData = data.asList().batch(chunkSize).map { x -> x.toDoubleArray() }
     /*
     The method here is based on the principle that there is a mean and if the benchmarking process gets interrupted
     this will cause a notch in the data (positive or negative depending on the metric) which can be rejected
@@ -52,7 +45,7 @@ fun rejectAnomalousData(data: DoubleArray, alpha: Double = 0.01, chunkSize: Int 
 
     //first let's find the "mode" mean by using ANOVA testing of chunks
     val meanBuckets = arrayListOf<MutableList<DoubleArray>>()
-    for (chunk in chunkedData) {
+    for (chunk in data.inBatchesOf(chunkSize)) {
         var foundMeanBucket = false
         for (bucket in meanBuckets) {
             val testChunks = bucket + listOf(chunk)
@@ -77,7 +70,3 @@ fun rejectAnomalousData(data: DoubleArray, alpha: Double = 0.01, chunkSize: Int 
 }
 
 
-private fun <T> Iterable<T>.batch(chunkSize: Int) =
-        withIndex().                        // create index value pairs
-                groupBy { it.index / chunkSize }.   // create grouping index
-                map { it.value.map { it.value } }   // split into different partitions
