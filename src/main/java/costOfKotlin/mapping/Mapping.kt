@@ -14,7 +14,7 @@ open class Mapping {
     fun baseline_indexed_arrayList(listState: ListState) : List<String> {
         val list = listState.arrayListOfStrings
         val result = ArrayList<String>(list.size)
-        for (i in 0 until result.size) {
+        for (i in 0 until list.size) {
             result.add(list[i])
         }
         return result
@@ -87,7 +87,7 @@ fun probablyFasterByBetween(reference: KFunction<*>, minFactor: Double, maxFacto
 
 inline fun <T, R> List<T>.indexedMap(transform: (T) -> R): List<R> {
     val result = ArrayList<R>(this.size)
-    for (i in 0 until result.size) {
+    for (i in 0 until size) {
         result.add(transform(this.get(i)))
     }
     return result
