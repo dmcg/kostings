@@ -5,6 +5,7 @@ import com.natpryce.hamkrest.assertion.assertThat
 import com.oneeyedmen.kostings.probablyFasterThan
 import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
+import java.util.function.Consumer
 import kotlin.reflect.KFunction
 import kotlin.test.assertEquals
 
@@ -60,6 +61,16 @@ open class KotlinMapping {
         return listState.linkedListOfStrings.spliteratorMap { it }
     }
 
+    @Benchmark
+    fun foreach_map_arrayList(listState: ListState) : List<String> {
+        return listState.arrayListOfStrings.forEachMap { it }
+    }
+
+    @Benchmark
+    fun foreach_map_linkedList(listState: ListState) : List<String> {
+        return listState.linkedListOfStrings.forEachMap { it }
+    }
+
     @Test
     fun `on arrayList map is quite a lot slower than indexed access`() {
         assertThat(this::baseline_indexed_arrayList, probablyFasterByBetween(this::map_arrayList, 0.2, 0.3))
@@ -92,5 +103,11 @@ inline fun <T, R> List<T>.specialisedMap(transform: (T) -> R): List<R> = when {
 inline fun <T, R> List<T>.spliteratorMap(crossinline transform: (T) -> R) : List<R>{
     val result = ArrayList<R>(this.size)
     spliterator().forEachRemaining() { result.add(transform(it)) }
+    return result
+}
+
+inline fun <T, R> List<T>.forEachMap(crossinline transform: (T) -> R) : List<R>{
+    val result = ArrayList<R>(this.size)
+    this.forEach(Consumer { t -> result.add(transform(t)) })
     return result
 }
