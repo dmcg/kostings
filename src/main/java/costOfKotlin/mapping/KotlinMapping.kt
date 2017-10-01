@@ -1,9 +1,12 @@
 package costOfKotlin.mapping
 
 import com.natpryce.hamkrest.and
+import com.natpryce.hamkrest.assertion.assertThat
 import com.oneeyedmen.kostings.probablyFasterThan
+import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import kotlin.reflect.KFunction
+import kotlin.test.assertEquals
 
 open class KotlinMapping {
 
@@ -28,6 +31,16 @@ open class KotlinMapping {
     }
 
     @Benchmark
+    fun indexedMap_arrayList(listState: ListState) : List<String> {
+        return listState.arrayListOfStrings.indexedMap { it }
+    }
+
+    @Benchmark
+    fun indexedMap_linkedList(listState: ListState) : List<String> {
+        return listState.linkedListOfStrings.indexedMap { it }
+    }
+
+    @Benchmark
     fun specialised_map_arrayList(listState: ListState) : List<String> {
         return listState.arrayListOfStrings.specialisedMap { it }
     }
@@ -37,25 +50,26 @@ open class KotlinMapping {
         return listState.linkedListOfStrings.specialisedMap { it }
     }
 
+    @Benchmark
+    fun spliterator_map_arrayList(listState: ListState) : List<String> {
+        return listState.arrayListOfStrings.spliteratorMap { it }
+    }
 
-//    @Test
-//    fun `use of iterator rather than indexing is crippling`() {
-//        assertThat(this::baseline_indexed_arrayList, probablyFasterByBetween(this::baseline_iterator_arrayList, 25.0, 30.0))
-//    }
-//
-//    @Test
-//    fun `indexedMap is much better for both lists`() {
-//        assertThat(this::indexedMap_arrayList, probablyFasterByBetween(this::map_arrayList, 30.0, 35.0))
-//
-//        assertThat(this::indexedMap_linkedList, probablyFasterByBetween(this::map_linkedList, 30.0, 35.0))
-//            // This may be a bit unfair because of all nodes are created at the same time
-//    }
-//
-//    @Test
-//    fun `specialised map can choose`() {
-//        assertThat(this::specialisedMap_arrayList, probablyFasterByBetween(this::map_arrayList, 30.0, 35.0))
-//        assertThat(this::map_linkedList, ! probablyDifferentTo(this::specialisedMap_linkedList))
-//    }
+    @Benchmark
+    fun spliterator_map_linkedList(listState: ListState) : List<String> {
+        return listState.linkedListOfStrings.spliteratorMap { it }
+    }
+
+    @Test
+    fun `on arrayList map is quite a lot slower than indexed access`() {
+        assertThat(this::baseline_indexed_arrayList, probablyFasterByBetween(this::map_arrayList, 0.2, 0.3))
+    }
+
+    @Test
+    fun spliteratorMap() {
+        val list = listOf("hello", "world")
+        assertEquals(list.map { it.length }, list.spliteratorMap { it.length })
+    }
 
 }
 
@@ -73,4 +87,10 @@ inline fun <T, R> List<T>.indexedMap(transform: (T) -> R): List<R> {
 inline fun <T, R> List<T>.specialisedMap(transform: (T) -> R): List<R> = when {
     this is RandomAccess -> indexedMap(transform)
     else -> map(transform)
+}
+
+inline fun <T, R> List<T>.spliteratorMap(crossinline transform: (T) -> R) : List<R>{
+    val result = ArrayList<R>(this.size)
+    spliterator().forEachRemaining() { result.add(transform(it)) }
+    return result
 }
