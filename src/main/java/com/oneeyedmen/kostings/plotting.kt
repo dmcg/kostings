@@ -22,8 +22,8 @@ fun Iterable<Batch>.plotIn(outputDir: File) =
 
 
 private fun runPython(script: String, input: File, outputFile: File) {
-    ProcessBuilder("python", script, input.absolutePath, outputFile.absolutePath)
-        .redirectOutput(ProcessBuilder.Redirect.INHERIT)
+    ProcessBuilder("pythonw", script, input.absolutePath, outputFile.absolutePath)
+        .inheritIO()
         .start()
         .waitFor(5, TimeUnit.SECONDS)
 }

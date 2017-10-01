@@ -9,9 +9,9 @@ import java.io.File
 private val defaultPatterns = listOf("baselines", "strings", "primitives", "let")
 private val baseOptions = BatchOptions("*", forks = 10, warmups = 20, measurements = 20)
 
-val resultsDir = File("results")
+val resultsDir = File("results").apply { mkdirs() }
 val canonicalResultsDir = File("canonical-results")
-val imagesDir = resultsDir.resolve("images").apply { mkdirs() }
+val imagesDir = resultsDir
 
 object benchmarking {
     @JvmStatic
