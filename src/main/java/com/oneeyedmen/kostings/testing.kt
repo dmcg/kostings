@@ -16,13 +16,13 @@ import kotlin.reflect.jvm.jvmName
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {
-        val testClasses = resurrectedBatches.allResults.toBenchmarkClasses().toTypedArray()
+        val testClasses = ResurrectedBatches.allResults.toBenchmarkClasses().toTypedArray()
         val testResult = runTests(*testClasses)
         System.exit(if (testResult.wasSuccessful()) 0 else 1)
     }
 }
 
-object resurrectedBatches {
+object ResurrectedBatches {
 
     fun resultNamed(benchmarkName: String): Result? = resultsByName[benchmarkName]
 
@@ -67,7 +67,7 @@ private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (Perfo
     }
 
 private fun resultFor(method: KFunction<*>) =
-    method.methodName.let { resurrectedBatches.resultNamed(it) } ?: throw IllegalStateException("no results were found for ${method.methodName}")
+    method.methodName.let { ResurrectedBatches.resultNamed(it) } ?: throw IllegalStateException("no results were found for ${method.methodName}")
 
 val KFunction<*>.methodName
     get() = (this as? FunctionReference)?.let {
