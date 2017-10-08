@@ -27,7 +27,7 @@ The results directory is then used as a cache - results for a given benchmark co
 
 The JUnit tests assume that the benchmarks have already been run - this allows fast iteration on the tests once data has been gathered.
 
-Because benchmarks may be run with different parameters and in different batches, the tests don't load results from the `results` directory. Instead they load from `canonical-results`. For now, just copy the files from `results` to `canonical-results`. (If more than one file has results for a benchmark, the first will be picked - I'm working on this). Then you should be able to invoke the `main` in `com/oneeyedmen/kostings/testing.kt` from your IDE, or point at an individual test in your IDE and run it there. 
+Because benchmarks may be run with different parameters and in different batches, the tests don't load results from the `results` directory. Instead they load from `canonical-results`. For now, just copy the files from `results` to `canonical-results`. (If more than one file has results for a benchmark, the first will be picked - I'm working on this. [GET ON WITH IT]). Then you should be able to invoke the `main` in `com/oneeyedmen/kostings/testing.kt` from your IDE, or point at an individual test in your IDE and run it there. 
 
 Tests are able to reference benchmark results with function references, viz
 
@@ -41,14 +41,14 @@ open class KotlinBaseline {
 
     @Test
     fun `java is quicker but not by much`() {
-        assertThat(JavaBaseline::baseline, probablyFasterThan(this::baseline))
-        assertThat(JavaBaseline::baseline, fasterByLessThan(this::baseline, 0.05))
+        assertThat(JavaBaseline::baseline, probablyFasterThan(this::baseline, byAFactorOf = 0.005))
+        assertThat(JavaBaseline::baseline, ! probablyFasterThan(this::baseline, byAFactorOf = 0.01))
     }
 
 }
 ```
 
-Note that the matchers are (not yet) statistically sophisticated!
+Note that the matchers are becoming statistically sophisticated. probablyFasterThan/probablySlowerThan/probablyDifferentTo all use T-Tests to statistically compare the means between benchmarks. Optional byAFactorOf parameters allow testing of the scale of the difference.
 
 ## Aspects of Performance to Investigate
 
