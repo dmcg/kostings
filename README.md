@@ -27,7 +27,7 @@ The results directory is then used as a cache - results for a given benchmark co
 
 The JUnit tests assume that the benchmarks have already been run - this allows fast iteration on the tests once data has been gathered.
 
-Because benchmarks may be run with different parameters and in different batches, the tests don't load results from the `results` directory. Instead they load from `canonical-results`. For now, just copy the files from `results` to `canonical-results`. (If more than one file has results for a benchmark, the first will be picked - I'm working on this. [GET ON WITH IT]). Then you should be able to invoke the `main` in `com/oneeyedmen/kostings/testing.kt` from your IDE, or point at an individual test in your IDE and run it there. 
+Because benchmarks may be run with different parameters and in different batches, the tests don't load results from the `results` directory. Instead they load from `canonical-results`. For now, just copy the files from `results` to `canonical-results`. (If more than one file has results for a benchmark, the results from all files will be merged). Then you should be able to invoke the `main` in `com/oneeyedmen/kostings/testing.kt` from your IDE, or point at an individual test in your IDE and run it there. 
 
 Tests are able to reference benchmark results with function references, viz
 
@@ -56,14 +56,14 @@ These are the sort of things I'd like to write tests for
 
 * Nullable primitives (boxing)
 * Non-nullable references (assertions)
-* Null-coalesing and elvis
+* String interpolation 
 * Collections of primitives
 * Use of TreeMap TreeSet etc
 * Iterables vs Sequences
 * Inlining
 * Calling Lambda
+* Null-coalesing and elvis
 * Method references
-* String interpolation 
 * Java 6 vs 8
 * Top-level functions 
 * Companion objects
