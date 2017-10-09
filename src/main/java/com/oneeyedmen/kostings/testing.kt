@@ -24,13 +24,13 @@ object Testing {
 
 object ResurrectedBatches {
 
-    fun resultNamed(benchmarkName: String): Result? = resultsByName[benchmarkName]
+    fun resultNamed(benchmarkName: String): CompositeResult? = resultsByName[benchmarkName]
 
-    val allResults: Collection<Result> get() = resultsByName.values
+    val allResults: Collection<CompositeResult> get() = resultsByName.values
 
-    private val resultsByName: Map<String, Result> = readResults(canonicalResultsDir)
+    private val resultsByName: Map<String, CompositeResult> = readResults(canonicalResultsDir)
         .groupBy { it.benchmarkName }
-        .mapValues { entry -> entry.value.mergeResults() }
+        .mapValues { entry -> CompositeResult(entry.value) }
 
 }
 

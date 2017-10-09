@@ -7,7 +7,7 @@ fun readBatches(dir: File): Sequence<Batch> = dir
     .asSequence()
     .mapNotNull(File::toBatch)
 
-fun readResults(dir: File): Sequence<Result> = readBatches(dir).flatMap { it.results.asSequence() }
+fun readResults(dir: File): Sequence<IndividualBenchmarkResult> = readBatches(dir).flatMap { it.results.asSequence() }
 
 private fun File.toBatch(): Batch? {
     val batchOptions = this.toBatchOptions() ?: return null

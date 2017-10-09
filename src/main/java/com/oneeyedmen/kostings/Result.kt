@@ -5,13 +5,11 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math3.stat.descriptive.StatisticalSummary
 
 
-
-class Result(
-    val benchmarkName: String,
-    val mode: String,
-    val units: String,
+interface Result {
+    val benchmarkName: String
+    val mode: String
+    val units: String
     val stats: DescriptiveStatistics
-) {
 
     val performanceData get() = performanceData(benchmarkName, stats)
 
@@ -19,27 +17,27 @@ class Result(
 
     val samplesCount get() = stats.n.toInt()
 
+    val error_999 get() = stats.meanError(0.999)// the confidence reported by JMH
+
     fun getSample(i: Int) = stats.getElement(i)
 
-    val error = stats.meanError(0.999) // the confidence reported by JMH
-
-    override fun toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
+    fun _toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
 }
 
-private data class EssentialData(
-    val benchmarkName: String,
-    val mode: String,
-    val samplesCount: Int,
-    val score: Double,
-    val error: Double,
-    val units: String
+data class EssentialData(
+    private val benchmarkName: String,
+    private val mode: String,
+    private val samplesCount: Int,
+    private val score: Double,
+    private val error_999: Double,
+    private val units: String
 ) {
     constructor(result: Result) : this(
         benchmarkName = result.benchmarkName,
         mode = result.mode,
         samplesCount = result.samplesCount,
         score = result.score,
-        error = result.error,
+        error_999 = result.error_999,
         units = result.units
     )
 }
@@ -58,3 +56,4 @@ fun StatisticalSummary.meanError(confidence: Double): Double {
     val a = tDist.inverseCumulativeProbability(1 - (1 - confidence) / 2)
     return a * standardDeviation / Math.sqrt(n.toDouble())
 }
+

@@ -3,13 +3,24 @@ package com.oneeyedmen.kostings
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math3.stat.inference.TestUtils
 
-fun Iterable<Result>.mergeResults(): Result =
-    Result(
-        benchmarkName = this.allTheSame(Result::benchmarkName),
-        mode = this.allTheSame(Result::mode),
-        units = this.allTheSame(Result::units),
-        stats = this.map { it.stats }.concatStats()
-    )
+
+
+/**
+ * Merges results into a single result with the data from all.
+ *
+ * Checks that results are for the same benchmark.
+ *
+ * TODO DMCG 2017-10 - check the individual results are statistically compatible before merging.
+ */
+class CompositeResult(results: Iterable<Result>) : Result {
+
+    override val benchmarkName: String = results.allTheSame(Result::benchmarkName)
+    override val mode: String = results.allTheSame(Result::mode)
+    override val units: String = results.allTheSame(Result::units)
+    override val stats: DescriptiveStatistics = results.map { it.stats }.concatStats()
+
+    override fun toString() = _toString()
+}
 
 private fun Iterable<DescriptiveStatistics>.concatStats(): DescriptiveStatistics {
     return this.fold(DescriptiveStatistics()) { collector, each ->
@@ -23,7 +34,6 @@ private fun DescriptiveStatistics.addValuesFrom(other: DescriptiveStatistics) {
         this.addValue(other.getElement(i))
     }
 }
-
 
 private fun <T> Iterable<Result>.allTheSame(property: (Result) -> T): T {
     // fold is nastier

@@ -11,7 +11,7 @@ import java.io.IOException
 data class Batch(
     val batchOptions: BatchOptions,
     val dataFile: File,
-    val results: List<Result>)
+    val results: List<IndividualBenchmarkResult>)
 {
     companion object {
         private val objectMapper = jacksonObjectMapper()
@@ -39,7 +39,7 @@ data class Batch(
             val printer = CSVPrinter(writer, CSVFormat.EXCEL)
             printer.printRecord("Benchmark", "Mode", "Samples", "Score", "Score Error (99.9%)", "Unit")
             results.forEach {
-                printer.printRecord(it.benchmarkName, it.mode, it.samplesCount.toString(), it.score.toString(), it.error.toString(), it.units)
+                printer.printRecord(it.benchmarkName, it.mode, it.samplesCount.toString(), it.score.toString(), it.error_999.toString(), it.units)
             }
         }
     }
@@ -55,9 +55,9 @@ data class Batch(
     }
 }
 
-private fun JsonNode.toResult(): Result {
+private fun JsonNode.toResult(): IndividualBenchmarkResult {
     val allSampleNodes = this["primaryMetric"]["rawData"].asIterable().asIterable().flatten()
-    return Result(
+    return IndividualBenchmarkResult(
         benchmarkName = this["benchmark"].asText(),
         mode = this["mode"].asText(),
         units = this["primaryMetric"]["scoreUnit"].asText(),
