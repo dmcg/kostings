@@ -59,6 +59,7 @@ These are the sort of things I'd like to write tests for
 * String interpolation 
 * Collections of primitives
 * Use of TreeMap TreeSet etc
+* Val rather than fields
 * Iterables vs Sequences
 * Inlining
 * Calling Lambda

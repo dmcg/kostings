@@ -8,6 +8,10 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import java.io.File
 import java.io.IOException
 
+/**
+ * Represents the results of a single invocation of JMH, which might run multiple benchmarks (as governed by the pattern
+ * in batchOptions), but collects all the results into a single JSON datafile.
+ */
 data class Batch(
     val batchOptions: BatchOptions,
     val dataFile: File,
