@@ -7,7 +7,7 @@ import org.apache.commons.math3.stat.inference.TestUtils
 
 
 /**
- * Merges results into a single result with the data from all.
+ * Merges [Result]s into a single [Result] with the data from all.
  *
  * Checks that results are for the same benchmark.
  *

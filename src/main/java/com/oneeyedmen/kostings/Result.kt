@@ -6,6 +6,9 @@ import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math3.stat.descriptive.StatisticalSummary
 
 
+/**
+ * Represents the results of running a benchmark.
+ */
 interface Result : Stats {
     val benchmarkName: String
     val mode: String
