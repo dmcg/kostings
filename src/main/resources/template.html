@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>%%TITLE%%</title>
+    <style>
+        html {
+            font-size: 1em;
+            font-family: sans-serif;
+            color: #191960;
+            background: #fff;
+        }
+
+        .title {
+            font-weight: bold;
+        }
+
+        .generated {
+            font-size: 0.75em;
+            color: #808080;
+        }
+
+        .result1 {
+          fill: none;
+          stroke: blue;
+          stroke-dasharray: 5,2;
+          stroke-width: 1px;
+        }
+
+        .result2 {
+          fill: none;
+          stroke: red;
+          stroke-width: 1px;
+        }
+
+        .mean1 {
+          fill: none;
+          stroke: blue;
+          stroke-dasharray: 5,2;
+          stroke-width: 3px;
+        }
+
+        .mean2 {
+          fill: none;
+          stroke: red;
+          stroke-width: 3px;
+        }
+
+        .label {
+            color: #a0a0a0;
+        }
+    </style>
+</head>
+<body>
+<div class="title">Comparison of %%TITLE%%</div>
+<div class="generated">Generated on %%GENERATED%%</div>
+
+<script>
+    let result1 = %%RESULT1%%;
+    let mean1 = %%MEAN1%%;
+    let result2 = %%RESULT2%%;
+    let mean2 = %%MEAN2%%;
+    let units = "%%UNITS%%";
+</script>
+<script src="%%D3%%"></script>
+<script src="%%RENDER%%"></script>
+</body>
+</html>

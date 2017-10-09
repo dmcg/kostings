@@ -1,13 +1,16 @@
 package com.oneeyedmen.kostings
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.natpryce.hamkrest.MatchResult
 import com.natpryce.hamkrest.Matcher
 import com.oneeyedmen.kostings.matchers.probablyDifferentTo
 import com.oneeyedmen.kostings.matchers.probablyLessThan
 import com.oneeyedmen.kostings.matchers.probablyMoreThan
+import org.apache.commons.math3.random.EmpiricalDistribution
 import org.junit.internal.RealSystem
 import org.junit.internal.TextListener
 import org.junit.runner.JUnitCore
+import java.util.*
 import kotlin.jvm.internal.FunctionReference
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -60,7 +63,12 @@ private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (Perfo
 
         override fun invoke(actual: KFunction<*>): MatchResult {
             val actualResult = resultFor(actual)
-            return delegateMatcher.invoke(actualResult.performanceData)
+            val matcher = delegateMatcher.invoke(actualResult.performanceData)
+            if (matcher is MatchResult.Mismatch) {
+                return MatchResult.Mismatch(matcher.description+"\n(visual comparison can be found at "+ dumpComparison(actualResult,resultFor(benchmarkFunction))+" )")
+            }
+            else
+                return matcher
         }
 
         private val delegateMatcher by lazy { comparator(resultFor(benchmarkFunction).performanceData) }
@@ -73,3 +81,29 @@ val KFunction<*>.methodName
     get() = (this as? FunctionReference)?.let {
         "${(it.owner as KClass<*>).jvmName}.${it.name}"
     } ?: throw IllegalArgumentException()
+
+private fun dumpComparison(result1: Result, result2: Result) : String {
+    val template = Testing::class.java.getResource("/template.html")
+    val renderJS = Testing::class.java.getResource("/render.js")
+    val d3js = Testing::class.java.getResource("/d3.v4.min.js")
+    var outputText = template.readText()
+    outputText=outputText.replace("%%D3%%",d3js.path).replace("%%RENDER%%",renderJS.path)
+    outputText=outputText.replace("%%TITLE%%", result1.benchmarkName+" vs "+ result2.benchmarkName).replace("%%GENERATED%%", Date().toString())
+
+    outputText=outputText.replace("%%RESULT1%%", jacksonObjectMapper().writeValueAsString(result1.histogram()))
+    outputText=outputText.replace("%%RESULT2%%",jacksonObjectMapper().writeValueAsString(result2.histogram()))
+    outputText=outputText.replace("%%MEAN1%%", result1.stats.mean.toString())
+    outputText=outputText.replace("%%MEAN2%%", result2.stats.mean.toString())
+
+    outputText=outputText.replace("%%UNITS%%", result1.units)
+
+    val file = createTempFile(suffix = ".html")
+    file.writeText(outputText)
+    return file.path
+}
+
+fun Result.histogram() : List<Array<Double>> {
+    val bucketStats = EmpiricalDistribution(31)
+    bucketStats.load(stats.values)
+    return bucketStats.getBinStats().map { arrayOf(it.mean, it.n.toDouble()) }
+}
