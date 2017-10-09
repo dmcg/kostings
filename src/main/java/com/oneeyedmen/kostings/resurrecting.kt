@@ -11,7 +11,7 @@ fun readResults(dir: File): Sequence<Result> = readBatches(dir).flatMap { it.res
 
 private fun File.toBatch(): Batch? {
     val batchOptions = this.toBatchOptions() ?: return null
-    return readBatchFromJson(batchOptions, this)
+    return Batch.readFromJson(batchOptions, this)
 }
 
 private val filenameRegex = """^(.*?)-f(\d+)-w(\d+)-m(\d+)-(.*)\.json""".toRegex()

@@ -6,13 +6,12 @@ import java.util.concurrent.TimeUnit
 fun Batch.plotHistogramTo(outputFile: File) =
     runPython("plot-histogram.py", summaryCsvFile, outputFile)
 
-fun JsonBatch.plotSamplesTo(outputFile: File) =
+fun Batch.plotSamplesTo(outputFile: File) =
     runPython("plot-samples.py", samplesCsvFile, outputFile)
 
 fun Batch.plotIn(outputDir: File) {
     plotHistogramTo(outputDir.resolve(batchOptions.outputFilename + ".png"))
-    if (this is JsonBatch)
-        plotSamplesTo(outputDir.resolve(batchOptions.outputFilename + ".samples.png"))
+    plotSamplesTo(outputDir.resolve(batchOptions.outputFilename + ".samples.png"))
 }
 
 fun Iterable<Batch>.plotIn(outputDir: File) =

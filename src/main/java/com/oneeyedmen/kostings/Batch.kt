@@ -1,11 +1,69 @@
 package com.oneeyedmen.kostings
 
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import org.apache.commons.csv.CSVFormat
+import org.apache.commons.csv.CSVPrinter
+import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import java.io.File
+import java.io.IOException
 
-interface Batch {
-    val batchOptions: BatchOptions
-    val dataFile: File
-    val results: List<Result>
-    val summaryCsvFile: File
+data class Batch(
+    val batchOptions: BatchOptions,
+    val dataFile: File,
+    val results: List<Result>)
+{
+    companion object {
+        fun readFromJson(batchOptions: BatchOptions, jsonFile: File): Batch {
+            val results = jacksonObjectMapper().readTree(jsonFile)?.asIterable()?.map { it.toResult() } ?: throw IOException("Can't read $jsonFile as JSON")
+            return Batch(batchOptions, jsonFile, results)
+        }
+    }
+
+    val summaryCsvFile: File by lazy {
+        File.createTempFile(batchOptions.outputFilename, ".csv").apply {
+            writeCSV(this)
+        }
+    }
+
+    val samplesCsvFile: File by lazy {
+        File.createTempFile(batchOptions.outputFilename, ".samples.csv").apply {
+            writeSamplesCSV(this)
+        }
+    }
+
+    private fun writeCSV(file: File) {
+        file.bufferedWriter(Charsets.UTF_8).use { writer ->
+            val printer = CSVPrinter(writer, CSVFormat.EXCEL)
+            printer.printRecord("Benchmark", "Mode", "Samples", "Score", "Score Error (99.9%)", "Unit")
+            results.forEach {
+                printer.printRecord(it.benchmarkName, it.mode, it.samplesCount.toString(), it.score.toString(), it.error.toString(), it.units)
+            }
+        }
+    }
+
+    private fun writeSamplesCSV(file: File) {
+        file.bufferedWriter(Charsets.UTF_8).use { writer ->
+            val printer = CSVPrinter(writer, CSVFormat.EXCEL)
+            printer.printRecord(*results.map { it.benchmarkName }.toTypedArray())
+            (0 until results.first().samplesCount)
+                .map { i -> results.map { it.getSample(i) }.toTypedArray() }
+                .forEach { printer.printRecord(*it) }
+        }
+    }
 }
 
+private fun JsonNode.toResult(): Result {
+    val allSampleNodes = this["primaryMetric"]["rawData"].asIterable().asIterable().flatten()
+    return Result(
+        benchmarkName = this["benchmark"].asText(),
+        mode = this["mode"].asText(),
+        units = this["primaryMetric"]["scoreUnit"].asText(),
+        stats = allSampleNodes.collectToStats()
+    )
+}
+
+private fun Iterable<JsonNode>.collectToStats(): DescriptiveStatistics = fold(DescriptiveStatistics()) { stats, node ->
+    stats.addValue(node.doubleValue())
+    stats
+}
