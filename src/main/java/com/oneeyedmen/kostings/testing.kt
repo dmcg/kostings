@@ -7,9 +7,11 @@ import com.oneeyedmen.kostings.matchers.Stats
 import com.oneeyedmen.kostings.matchers.probablyDifferentTo
 import com.oneeyedmen.kostings.matchers.probablyLessThan
 import com.oneeyedmen.kostings.matchers.probablyMoreThan
+import org.apache.commons.math3.random.EmpiricalDistribution
 import org.junit.internal.RealSystem
 import org.junit.internal.TextListener
 import org.junit.runner.JUnitCore
+import java.util.*
 import kotlin.jvm.internal.FunctionReference
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -91,8 +93,8 @@ private fun dumpComparison(result1: Result, result2: Result) : String {
 
     outputText=outputText.replace("%%RESULT1%%", jacksonObjectMapper().writeValueAsString(result1.histogram()))
     outputText=outputText.replace("%%RESULT2%%",jacksonObjectMapper().writeValueAsString(result2.histogram()))
-    outputText=outputText.replace("%%MEAN1%%", result1.stats.mean.toString())
-    outputText=outputText.replace("%%MEAN2%%", result2.stats.mean.toString())
+    outputText=outputText.replace("%%MEAN1%%", result1.data.mean.toString())
+    outputText=outputText.replace("%%MEAN2%%", result2.data.mean.toString())
 
     outputText=outputText.replace("%%UNITS%%", result1.units)
 
@@ -103,6 +105,6 @@ private fun dumpComparison(result1: Result, result2: Result) : String {
 
 fun Result.histogram() : List<Array<Double>> {
     val bucketStats = EmpiricalDistribution(31)
-    bucketStats.load(stats.values)
+    bucketStats.load(data.values)
     return bucketStats.getBinStats().map { arrayOf(it.mean, it.n.toDouble()) }
 }
