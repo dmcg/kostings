@@ -16,7 +16,7 @@ object DataChecking{
     }
 
     private fun reportIffness(batch: Batch) {
-        val iffyness: Map<Result, String> = batch.results.associate { it to isIffy(it.stats.values) }
+        val iffyness: Map<Result, String> = batch.results.associate { it to isIffy(it.data.values) }
         println("${batch.dataFile} : ${iffyness.summary()}")
         iffyness.forEach { result, iffy ->
             println("    ${result.benchmarkName} : ${iffy}")

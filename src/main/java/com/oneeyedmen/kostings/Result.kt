@@ -1,25 +1,26 @@
 package com.oneeyedmen.kostings
 
+import com.oneeyedmen.kostings.matchers.Stats
 import org.apache.commons.math3.distribution.TDistribution
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math3.stat.descriptive.StatisticalSummary
 
 
-interface Result {
+interface Result : Stats {
     val benchmarkName: String
     val mode: String
     val units: String
-    val stats: DescriptiveStatistics
 
-    val performanceData get() = performanceData(benchmarkName, stats)
+    override val data: DescriptiveStatistics
+    override val description get() = benchmarkName
 
-    val score: Double get() = stats.mean
+    val score: Double get() = data.mean
 
-    val samplesCount get() = stats.n.toInt()
+    val samplesCount get() = data.n.toInt()
 
-    val error_999 get() = stats.meanError(0.999)// the confidence reported by JMH
+    val error_999 get() = data.meanError(0.999)// the confidence reported by JMH
 
-    fun getSample(i: Int) = stats.getElement(i)
+    fun getSample(i: Int) = data.getElement(i)
 
     fun _toString() = EssentialData(this).toString().replaceFirst("EssentialData", "Result")
 }
@@ -42,10 +43,10 @@ data class EssentialData(
     )
 }
 
-private fun performanceData(description: String, stats: StatisticalSummary): PerformanceData {
-    return object : PerformanceData {
+private fun performanceData(description: String, stats: StatisticalSummary): Stats {
+    return object : Stats {
         override val description = description
-        override val stats = stats
+        override val data = stats
     }
 }
 

@@ -61,7 +61,7 @@ private fun JsonNode.toResult(): IndividualBenchmarkResult {
         benchmarkName = this["benchmark"].asText(),
         mode = this["mode"].asText(),
         units = this["primaryMetric"]["scoreUnit"].asText(),
-        stats = allSampleNodes.collectToStats()
+        data = allSampleNodes.collectToStats()
     )
 }
 

@@ -8,7 +8,7 @@ class IndividualBenchmarkResult(
     override val benchmarkName: String,
     override val mode: String,
     override val units: String,
-    override val stats: DescriptiveStatistics
+    override val data: DescriptiveStatistics
 ) : Result {
 
     override fun toString() = _toString()

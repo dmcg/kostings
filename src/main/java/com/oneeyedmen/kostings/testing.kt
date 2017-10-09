@@ -2,6 +2,7 @@ package com.oneeyedmen.kostings
 
 import com.natpryce.hamkrest.MatchResult
 import com.natpryce.hamkrest.Matcher
+import com.oneeyedmen.kostings.matchers.Stats
 import com.oneeyedmen.kostings.matchers.probablyDifferentTo
 import com.oneeyedmen.kostings.matchers.probablyLessThan
 import com.oneeyedmen.kostings.matchers.probablyMoreThan
@@ -54,16 +55,16 @@ fun probablyFasterThan(benchmarkFunction: KFunction<*>, byAFactorOf: Double = 0.
 fun probablySlowerThan(benchmarkFunction: KFunction<*>, byAFactorOf: Double = 0.0, alpha: Double = 0.05) =
     benchmarkMatcher(benchmarkFunction) { probablyLessThan(it, byAFactorOf, alpha) }
 
-private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (PerformanceData) -> Matcher<PerformanceData>) =
+private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (Stats) -> Matcher<Stats>) =
     object : Matcher<KFunction<*>> {
         override val description get() = delegateMatcher.description
 
         override fun invoke(actual: KFunction<*>): MatchResult {
             val actualResult = resultFor(actual)
-            return delegateMatcher.invoke(actualResult.performanceData)
+            return delegateMatcher.invoke(actualResult)
         }
 
-        private val delegateMatcher by lazy { comparator(resultFor(benchmarkFunction).performanceData) }
+        private val delegateMatcher by lazy { comparator(resultFor(benchmarkFunction)) }
     }
 
 private fun resultFor(method: KFunction<*>) =
