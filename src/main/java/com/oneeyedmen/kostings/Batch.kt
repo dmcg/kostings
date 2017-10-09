@@ -14,8 +14,10 @@ data class Batch(
     val results: List<Result>)
 {
     companion object {
+        private val objectMapper = jacksonObjectMapper()
+
         fun readFromJson(batchOptions: BatchOptions, jsonFile: File): Batch {
-            val results = jacksonObjectMapper().readTree(jsonFile)?.asIterable()?.map { it.toResult() } ?: throw IOException("Can't read $jsonFile as JSON")
+            val results = objectMapper.readTree(jsonFile)?.asIterable()?.map { it.toResult() } ?: throw IOException("Can't read $jsonFile as JSON")
             return Batch(batchOptions, jsonFile, results)
         }
     }
