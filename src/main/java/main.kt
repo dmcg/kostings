@@ -2,5 +2,5 @@
 
 
 fun main(args: Array<String>) {
-    com.oneeyedmen.kostings.benchmarking.main(args)
+    com.oneeyedmen.kostings.Benchmarking.main(args)
 }
