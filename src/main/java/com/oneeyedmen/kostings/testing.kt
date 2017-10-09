@@ -3,14 +3,13 @@ package com.oneeyedmen.kostings
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.natpryce.hamkrest.MatchResult
 import com.natpryce.hamkrest.Matcher
+import com.oneeyedmen.kostings.matchers.Stats
 import com.oneeyedmen.kostings.matchers.probablyDifferentTo
 import com.oneeyedmen.kostings.matchers.probablyLessThan
 import com.oneeyedmen.kostings.matchers.probablyMoreThan
-import org.apache.commons.math3.random.EmpiricalDistribution
 import org.junit.internal.RealSystem
 import org.junit.internal.TextListener
 import org.junit.runner.JUnitCore
-import java.util.*
 import kotlin.jvm.internal.FunctionReference
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
@@ -57,13 +56,13 @@ fun probablyFasterThan(benchmarkFunction: KFunction<*>, byAFactorOf: Double = 0.
 fun probablySlowerThan(benchmarkFunction: KFunction<*>, byAFactorOf: Double = 0.0, alpha: Double = 0.05) =
     benchmarkMatcher(benchmarkFunction) { probablyLessThan(it, byAFactorOf, alpha) }
 
-private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (PerformanceData) -> Matcher<PerformanceData>) =
+private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (Stats) -> Matcher<Stats>) =
     object : Matcher<KFunction<*>> {
         override val description get() = delegateMatcher.description
 
         override fun invoke(actual: KFunction<*>): MatchResult {
             val actualResult = resultFor(actual)
-            val matcher = delegateMatcher.invoke(actualResult.performanceData)
+            val matcher = delegateMatcher.invoke(actualResult)
             if (matcher is MatchResult.Mismatch) {
                 return MatchResult.Mismatch(matcher.description+"\n(visual comparison can be found at "+ dumpComparison(actualResult,resultFor(benchmarkFunction))+" )")
             }
@@ -71,7 +70,7 @@ private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (Perfo
                 return matcher
         }
 
-        private val delegateMatcher by lazy { comparator(resultFor(benchmarkFunction).performanceData) }
+        private val delegateMatcher by lazy { comparator(resultFor(benchmarkFunction)) }
     }
 
 private fun resultFor(method: KFunction<*>) =

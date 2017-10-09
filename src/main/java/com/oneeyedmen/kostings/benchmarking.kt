@@ -33,7 +33,7 @@ fun readOrRunBenchmark(batchOptions: BatchOptions, outputDir: File): Batch {
     val file = outputDir.resolve(batchOptions.outputFilename + ".json")
     if (!file.isFile)
         runBenchmark(batchOptions, file)
-    return Batch.readFromJson(batchOptions, file)
+    return Batch.readFromJson(file)!! // we had better be able to read it, as we just wrote it
 }
 
 private fun runBenchmark(batchOptions: BatchOptions, outputFile: File) {

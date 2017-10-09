@@ -1,5 +1,6 @@
 package com.oneeyedmen.kostings
 
+import com.oneeyedmen.kostings.util.inBatchesOf
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
 import org.apache.commons.math3.stat.inference.TestUtils
 
@@ -17,7 +18,7 @@ class CompositeResult(results: Iterable<Result>) : Result {
     override val benchmarkName: String = results.allTheSame(Result::benchmarkName)
     override val mode: String = results.allTheSame(Result::mode)
     override val units: String = results.allTheSame(Result::units)
-    override val stats: DescriptiveStatistics = results.map { it.stats }.concatStats()
+    override val data: DescriptiveStatistics = results.map { it.data }.concatStats()
 
     override fun toString() = _toString()
 }

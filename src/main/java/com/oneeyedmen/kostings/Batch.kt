@@ -16,7 +16,8 @@ data class Batch(
     companion object {
         private val objectMapper = jacksonObjectMapper()
 
-        fun readFromJson(batchOptions: BatchOptions, jsonFile: File): Batch {
+        fun readFromJson(jsonFile: File): Batch? {
+            val batchOptions = BatchOptions.fromFilename(jsonFile.name) ?: return null
             val results = objectMapper.readTree(jsonFile)?.asIterable()?.map { it.toResult() } ?: throw IOException("Can't read $jsonFile as JSON")
             return Batch(batchOptions, jsonFile, results)
         }
@@ -61,7 +62,7 @@ private fun JsonNode.toResult(): IndividualBenchmarkResult {
         benchmarkName = this["benchmark"].asText(),
         mode = this["mode"].asText(),
         units = this["primaryMetric"]["scoreUnit"].asText(),
-        stats = allSampleNodes.collectToStats()
+        data = allSampleNodes.collectToStats()
     )
 }
 

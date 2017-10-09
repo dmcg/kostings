@@ -1,8 +1,8 @@
-package com.oneeyedmen.kostings
+package com.oneeyedmen.kostings.matchers
 
 import org.apache.commons.math3.stat.descriptive.StatisticalSummary
 
-interface PerformanceData {
-    val stats: StatisticalSummary
+interface Stats {
     val description : String
+    val data: StatisticalSummary
 }
