@@ -15,41 +15,23 @@ import java.io.IOException
 data class Batch(
     val batchOptions: BatchOptions,
     val dataFile: File,
-    val results: List<IndividualBenchmarkResult>)
+    override val results: List<IndividualBenchmarkResult>
+) : ResultSet
 {
     companion object {
         private val objectMapper = jacksonObjectMapper()
 
         fun readFromJson(jsonFile: File): Batch? {
             val batchOptions = BatchOptions.fromFilename(jsonFile.name) ?: return null
-            val results = objectMapper.readTree(jsonFile)?.asIterable()?.map { it.toResult() } ?: throw IOException("Can't read $jsonFile as JSON")
+            val results = objectMapper.readTree(jsonFile)?.asIterable()?.map { it.toResult() } ?:
+                throw IOException("Can't read $jsonFile as JSON")
             return Batch(batchOptions, jsonFile, results)
         }
     }
 
-    val summaryCsvFile: File by lazy {
-        File.createTempFile(batchOptions.outputFilename, ".csv").apply {
-            writeCSV(this)
-        }
-    }
+    override val description get() = batchOptions.outputFilename
 
-    val samplesCsvFile: File by lazy {
-        File.createTempFile(batchOptions.outputFilename, ".samples.csv").apply {
-            writeSamplesCSV(this)
-        }
-    }
-
-    private fun writeCSV(file: File) {
-        file.bufferedWriter(Charsets.UTF_8).use { writer ->
-            val printer = CSVPrinter(writer, CSVFormat.EXCEL)
-            printer.printRecord("Benchmark", "Mode", "Samples", "Score", "Score Error (99.9%)", "Unit")
-            results.forEach {
-                printer.printRecord(it.benchmarkName, it.mode, it.samplesCount.toString(), it.score.toString(), it.error_999.toString(), it.units)
-            }
-        }
-    }
-
-    private fun writeSamplesCSV(file: File) {
+    fun writeSamplesCSV(file: File) {
         file.bufferedWriter(Charsets.UTF_8).use { writer ->
             val printer = CSVPrinter(writer, CSVFormat.EXCEL)
             printer.printRecord(*results.map { it.benchmarkName }.toTypedArray())

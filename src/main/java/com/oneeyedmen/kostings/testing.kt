@@ -20,23 +20,13 @@ import kotlin.reflect.jvm.jvmName
 object Testing {
     @JvmStatic
     fun main(args: Array<String>) {
-        val testClasses = ResurrectedBatches.allResults.toBenchmarkClasses().toTypedArray()
+        val testClasses = resurrectedBatches.allResults.toBenchmarkClasses().toTypedArray()
         val testResult = runTests(*testClasses)
         System.exit(if (testResult.wasSuccessful()) 0 else 1)
     }
 }
 
-object ResurrectedBatches {
-
-    fun resultNamed(benchmarkName: String): CompositeResult? = resultsByName[benchmarkName]
-
-    val allResults: Collection<CompositeResult> get() = resultsByName.values
-
-    private val resultsByName: Map<String, CompositeResult> = readResults(Directories.canonicalResultsDir)
-        .groupBy { it.benchmarkName }
-        .mapValues { entry -> CompositeResult(entry.value) }
-
-}
+val resurrectedBatches by lazy { Results(Directories.canonicalResultsDir) }
 
 private fun Iterable<Result>.toBenchmarkClasses(): List<Class<*>> =
     map { it.benchmarkName.toClassName() }.toSet().map { Class.forName(it) }
@@ -76,7 +66,7 @@ private fun benchmarkMatcher(benchmarkFunction: KFunction<*>, comparator: (Stats
     }
 
 private fun resultFor(method: KFunction<*>) =
-    method.methodName.let { ResurrectedBatches.resultNamed(it) } ?: throw IllegalStateException("no results were found for ${method.methodName}")
+    method.methodName.let { resurrectedBatches.resultNamed(it) } ?: throw IllegalStateException("no results were found for ${method.methodName}")
 
 val KFunction<*>.methodName
     get() = (this as? FunctionReference)?.let {
