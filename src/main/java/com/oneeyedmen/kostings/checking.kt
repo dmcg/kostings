@@ -7,10 +7,10 @@ object DataChecking{
 
     @JvmStatic
     fun main(args: Array<String>) {
-        readBatches(canonicalResultsDir).forEach { batch ->
+        readBatches(Directories.canonicalResultsDir).forEach { batch ->
             reportIffness(batch)
         }
-        readBatches(resultsDir).forEach { batch ->
+        readBatches(Directories.resultsDir).forEach { batch ->
             reportIffness(batch)
         }
     }

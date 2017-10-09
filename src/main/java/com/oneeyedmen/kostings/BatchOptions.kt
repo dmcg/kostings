@@ -3,7 +3,16 @@ package com.oneeyedmen.kostings
 import org.openjdk.jmh.runner.options.Options
 import org.openjdk.jmh.runner.options.OptionsBuilder
 
-data class BatchOptions(val pattern: String, val forks: Int, val warmups: Int, val measurements: Int, val discriminator: String? = null) {
+/**
+ * Our representation of the options controlling a run of JMH
+ */
+data class BatchOptions(
+    val pattern: String,
+    val forks: Int,
+    val warmups: Int,
+    val measurements: Int,
+    val discriminator: String? = null
+) {
 
     companion object {
         fun fromFilename(filename: String): BatchOptions? {

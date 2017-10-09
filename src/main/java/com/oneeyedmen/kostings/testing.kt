@@ -32,7 +32,7 @@ object ResurrectedBatches {
 
     val allResults: Collection<CompositeResult> get() = resultsByName.values
 
-    private val resultsByName: Map<String, CompositeResult> = readResults(canonicalResultsDir)
+    private val resultsByName: Map<String, CompositeResult> = readResults(Directories.canonicalResultsDir)
         .groupBy { it.benchmarkName }
         .mapValues { entry -> CompositeResult(entry.value) }
 
