@@ -1,4 +1,4 @@
-package com.oneeyedmen.kostings;
+package com.oneeyedmen.kostings.util;
 
 import java.io.InputStream
 import java.io.PrintStream

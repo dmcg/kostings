@@ -1,4 +1,4 @@
-package com.oneeyedmen.kostings
+package com.oneeyedmen.kostings.util
 
 
 fun <T> Iterable<T>.inBatchesOf(batchSize: Int): List<List<T>> =
