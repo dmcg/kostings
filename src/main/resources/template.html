@@ -2,65 +2,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>%%TITLE%%</title>
-    <style>
-        html {
-            font-size: 1em;
-            font-family: sans-serif;
-            color: #191960;
-            background: #fff;
-        }
-
-        .title {
-            font-weight: bold;
-        }
-
-        .generated {
-            font-size: 0.75em;
-            color: #808080;
-        }
-
-        .result1 {
-          fill: none;
-          stroke: blue;
-          stroke-dasharray: 5,2;
-          stroke-width: 1px;
-        }
-
-        .result2 {
-          fill: none;
-          stroke: red;
-          stroke-width: 1px;
-        }
-
-        .mean1 {
-          fill: none;
-          stroke: blue;
-          stroke-dasharray: 5,2;
-          stroke-width: 3px;
-        }
-
-        .mean2 {
-          fill: none;
-          stroke: red;
-          stroke-width: 3px;
-        }
-
-        .label {
-            color: #a0a0a0;
-        }
-    </style>
+    <title>%%RESULT1_NAME%% vs %%RESULT2_NAME%%</title>
+    <link rel="stylesheet" type="text/css" href="%%STYLESHEET%%">
 </head>
 <body>
-<div class="title">Comparison of %%TITLE%%</div>
+<div class="title">Comparison of %%RESULT1_NAME%% vs %%RESULT2_NAME%%</div>
 <div class="generated">Generated on %%GENERATED%%</div>
+<svg></svg>
 
+<br/>
+<span class="subtitle">Result Sets Stats</span>
+<table>
+    <tr><th></th><th>mean</th><th>lower CI</th><th>upper CI</th><th id="alpha"></th></tr>
+    <tr><td class="result1">%%RESULT1_NAME%%</td><td id="mean1"></td><td id="lowerCI1"></td><td id="upperCI1"></td></tr>
+    <tr><td class="result2">%%RESULT2_NAME%%</td><td id="mean2"></td><td id="lowerCI2"></td><td id="upperCI2"></tr>
+</table>
+
+<br/>
+<span class="subtitle">Comparative Stats</span>
+<br/>
+The difference between the means has a Confidence Range of <span id="difflowerCI"></span> to <span id="diffupperCI"></span><br/>
+<span id="analysis"></span>
+<div id="subanalysis" style="visibility:hidden">
+    The mean of the <span class="result2">second result set</span> is <span id="direction"></span> than the mean of the <span class="result1">first result set</span> by a factor of between <span id="lowerfactor"></span> and <span id="upperfactor"></span>
+</div>
 <script>
+    let units = "%%UNITS%%";
+    let alpha = %%ALPHA%%;
     let result1 = %%RESULT1%%;
     let mean1 = %%MEAN1%%;
+    let lowerCI1 = %%LOWERCI1%%;
+    let upperCI1 = %%UPPERCI1%%;
     let result2 = %%RESULT2%%;
     let mean2 = %%MEAN2%%;
-    let units = "%%UNITS%%";
+    let lowerCI2 = %%LOWERCI2%%;
+    let upperCI2 = %%UPPERCI2%%;
+    let difflowerCI = %%DIFFLOWERCI%%;
+    let diffupperCI = %%DIFFUPPERCI%%;
 </script>
 <script src="%%D3%%"></script>
 <script src="%%RENDER%%"></script>

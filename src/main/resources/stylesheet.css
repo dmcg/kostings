@@ -1,0 +1,67 @@
+ html {
+    font-size: 1em;
+    font-family: sans-serif;
+    color: #191960;
+    background: #fff;
+}
+
+.title {
+    font-weight: bold;
+    font-size: 1.5em;
+}
+
+.generated {
+    font-size: 0.75em;
+    color: #808080;
+}
+
+.result1 {
+  stroke: blue;
+  color: blue;
+  stroke-dasharray: 5,2;
+}
+
+.result2 {
+  stroke: red;
+  color: red;
+}
+
+.histogram {
+  fill: none;
+  stroke-width: 1px;
+}
+
+.mean {
+  fill: none;
+  stroke-width: 3px;
+}
+
+.ci1 {
+  fill: blue;
+  stroke-width: none;
+  opacity: 0.1;
+}
+
+.ci2 {
+  fill: red;
+  stroke-width: none;
+  opacity: 0.1;
+}
+
+.label {
+    color: #a0a0a0;
+}
+
+#alpha {
+    font-weight: normal;
+    font-size: 0.75em;
+}
+
+.subtitle {
+    font-size: 1em;
+    font-weight: bold;
+}
+
+#direction {
+    font-weight: bold;
+}
