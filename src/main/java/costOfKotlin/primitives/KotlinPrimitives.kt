@@ -31,8 +31,7 @@ open class KotlinPrimitives {
 
     @Benchmark
     fun _4_sum_always_null(state: IntState, blackhole: Blackhole) {
-        /* As _3 but when always null.
-        */
+        // TODO - fix me
         blackhole.consume(state.nullInt ?: 0 + 1)
     }
 
@@ -51,25 +50,26 @@ open class KotlinPrimitives {
     }
 
     @Test
-    fun `parameter null check is undetectable`() {
-        assertThat(JavaPrimitives::_1_baseline, probablyFasterThan(this::_1_baseline))
-        assertThat(JavaPrimitives::_1_baseline, ! probablyFasterThan(this::_1_baseline))
-    }
-
-    @Test
-    fun `java sum is undetectable`() {
+    fun `java sum is marginally detectable`() {
+        assertThat(JavaPrimitives::_1_baseline, probablyDifferentTo(JavaPrimitives::_2_sum))
         assertThat(JavaPrimitives::_1_baseline, ! probablyFasterThan(JavaPrimitives::_2_sum))
     }
 
     @Test
-    fun `kotlin sum is undetectable`() {
-        assertThat(this::_1_baseline, probablyFasterThan(this::_2_sum))
+    fun `kotlin sum is not detectable`() {
+        assertThat(this::_1_baseline, ! probablyDifferentTo(this::_2_sum))
     }
 
     @Test
-    fun `nullable sum is detectable`() {
+    fun `sum nullable is slower`() {
         assertThat(this::_2_sum, probablyFasterThan(this::_3_sum_nullable))
+        assertThat(this::_2_sum, ! probablyFasterThan(this::_3_sum_nullable, byAFactorOf = 0.001))
+    }
+
+    @Test
+    fun `sum always null is slower`() {
         assertThat(this::_2_sum, probablyFasterThan(this::_4_sum_always_null))
+        assertThat(this::_2_sum, ! probablyFasterThan(this::_4_sum_always_null, byAFactorOf = 0.001))
     }
 
     @Test

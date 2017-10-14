@@ -18,6 +18,16 @@ public class JavaStrings {
         blackhole.consume(state.getHello() + " " + state.getWorld());
     }
 
+    @Benchmark
+    public void hand_rolled_concat(StringState state, Blackhole blackhole) {
+        blackhole.consume(new StringBuilder().append(state.getHello()).append(" ").append(state.getWorld()).toString());
+    }
+
+    @Benchmark
+    public void hand_rolled_concat_2(StringState state, Blackhole blackhole) {
+        blackhole.consume(new StringBuilder(state.getHello()).append(" ").append(state.getWorld()).toString());
+    }
+
     @Test
     public void dummy() {}
 

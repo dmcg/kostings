@@ -38,11 +38,19 @@ open class Invoking {
     }
 
     @Test
-    fun `pretty much indestinguishable`() {
-        assertThat(this::baseline, probablyFasterThan(this::invoke_via_reference))
-        assertThat(this::baseline, ! probablyDifferentTo(this::passed_as_lambda))
-        assertThat(this::baseline, ! probablyDifferentTo(this::passed_as_function_reference))
-        assertThat(this::baseline, probablyFasterButNotByMoreThan(this::passed_as_value_of_function_type, aFactorOf = 0.02))
+    fun `invoke via reference is slower than plain invocation`() {
+        assertThat(this::baseline, probablyFasterThan(this::invoke_via_reference, byAFactorOf = 0.01))
+        assertThat(this::baseline, ! probablyFasterThan(this::invoke_via_reference, byAFactorOf = 0.02))
+    }
+
+    @Test
+    fun `lambda and function reference are indistinguishable`() {
+        assertThat(this::passed_as_lambda, ! probablyDifferentTo(this::passed_as_function_reference))
+    }
+
+    @Test
+    fun `value of function type is like via reference`() {
+        assertThat(this::passed_as_lambda, probablyFasterButNotByMoreThan(this::passed_as_value_of_function_type, aFactorOf = 0.02))
     }
 
 
@@ -54,4 +62,4 @@ fun aFunction(i: Int) = 2 * i
 
 val aBlock: (Int) -> Int = { 2 * it }
 
-inline fun <T> applier(t: T, f: (T) -> T) = f(t)
+inline fun <T> applier(t: T, noinline f: (T) -> T) = f(t)
