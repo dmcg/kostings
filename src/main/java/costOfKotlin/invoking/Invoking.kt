@@ -62,4 +62,4 @@ fun aFunction(i: Int) = 2 * i
 
 val aBlock: (Int) -> Int = { 2 * it }
 
-inline fun <T> applier(t: T, noinline f: (T) -> T) = f(t)
+inline fun <T> applier(t: T, f: (T) -> T) = f(t)
