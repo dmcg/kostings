@@ -11,4 +11,4 @@ fun readBatches(dir: File): Sequence<Batch> = dir
 
 fun readResults(dir: File): Sequence<IndividualBenchmarkResult> = readBatches(dir).flatMap { it.results.asSequence() }
 
-fun File.isAResultFile() = name.endsWith(".json") && length() >= 0 // aborted runs leave behind 0 length files
+fun File.isAResultFile() = isFile && name.endsWith(".json") && length() > 0 // aborted runs leave behind 0 length files
