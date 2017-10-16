@@ -6,7 +6,7 @@ import org.openjdk.jmh.runner.options.CommandLineOptions
 import java.io.File
 
 
-private val defaultPatterns = listOf("baselines", "strings", "primitives", "let")
+private val defaultPatterns = listOf("baselines", "primitives", "invoking", "strings", "let", "mapping")
 private val baseOptions = BatchOptions("*", forks = 10, warmups = 20, measurements = 20)
 
 /**
