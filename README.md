@@ -23,30 +23,34 @@ This will tie your computer up for hours to populate the `results` directory and
 
 The results directory is then used as a cache - results for a given benchmark configuration will be read from the directory or rebuilt if they are not there.
 
-## To Run Tests
+## To Run Performance Tests
 
-The JUnit tests assume that the benchmarks have already been run - this allows fast iteration on the tests once data has been gathered.
-
-Because benchmarks may be run with different parameters and in different batches, the tests don't load results from the `results` directory. Instead they load from `canonical-results`. For now, just copy the files from `results` to `canonical-results`. (If more than one file has results for a benchmark, the results from all files will be merged). Then you should be able to invoke the `main` in `com/oneeyedmen/kostings/testing.kt` from your IDE, or point at an individual test in your IDE and run it there. 
-
-Tests are able to reference benchmark results with function references, viz
+Kostings allow you to write performance tests in the form of JUnit tests with assertions about the relative performance of benchmark methods.
 
 ```kotlin
-open class KotlinBaseline {
-
-    @Benchmark
-    fun baseline(state: StringState, blackhole: Blackhole) {
-        blackhole.consume(state)
-    }
+class BaselineTests {
 
     @Test
     fun `java is quicker but not by much`() {
-        assertThat(JavaBaseline::baseline, probablyFasterThan(this::baseline, byAFactorOf = 0.005))
-        assertThat(JavaBaseline::baseline, ! probablyFasterThan(this::baseline, byAFactorOf = 0.01))
+        assertThat(JavaBaseline::baseline, probablyFasterThan(KotlinBaseline::baseline, byAFactorOf = 0.005))
+        assertThat(JavaBaseline::baseline, ! probablyFasterThan(KotlinBaseline::baseline, byAFactorOf = 0.01))
     }
 
 }
 ```
+
+The performance tests assume that the benchmarks have already been run - this allows fast iteration on the tests once data has been gathered.
+
+Because benchmarks may be run with different parameters and in different batches, the tests don't load results from the `results` directory. Instead they load from `canonical-results`. For now, just copy the files from `results` to `canonical-results`. (If more than one file has results for a benchmark, the results from all files will be merged). 
+
+To run the performance tests (after you have collected some data in `canonical-results`)
+
+```bash
+mvn integration-test
+```
+
+or point your IDE at `performance-tests/java` and run the tests there.
+
 
 Note that the matchers are becoming statistically sophisticated. probablyFasterThan/probablySlowerThan/probablyDifferentTo all use T-Tests to statistically compare the means between benchmarks. Optional byAFactorOf parameters allow testing of the scale of the difference.
 

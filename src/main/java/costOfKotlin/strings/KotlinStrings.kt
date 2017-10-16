@@ -1,8 +1,5 @@
 package costOfKotlin.strings
 
-import com.natpryce.hamkrest.assertion.assertThat
-import com.oneeyedmen.kostings.probablyDifferentTo
-import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import org.openjdk.jmh.infra.Blackhole
 
@@ -26,14 +23,6 @@ open class KotlinStrings {
     fun `and even this`() = "${"${"hello" + " " + "world"}"}"
 
     fun `but not this`() = "$hello $world"
-
-
-    @Test
-    fun `cannot detect the difference between Java and Kotlin`() {
-        assertThat(JavaStrings::concat, ! probablyDifferentTo(this::concat))
-    }
-
-
 }
 
 private val hello = "hello"

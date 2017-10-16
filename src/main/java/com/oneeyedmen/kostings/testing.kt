@@ -19,15 +19,6 @@ import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 import kotlin.reflect.jvm.jvmName
 
-object Testing {
-    @JvmStatic
-    fun main(args: Array<String>) {
-        val testClasses = resurrectedBatches.allResults.toBenchmarkClasses().toTypedArray()
-        val testResult = runTests(*testClasses)
-        System.exit(if (testResult.wasSuccessful()) 0 else 1)
-    }
-}
-
 val resurrectedBatches by lazy { Results(Directories.canonicalResultsDir) }
 
 private fun Iterable<Result>.toBenchmarkClasses(): List<Class<*>> =
@@ -76,10 +67,10 @@ val KFunction<*>.methodName
     } ?: throw IllegalArgumentException()
 
 private fun dumpComparison(result1: Result, result2: Result, alpha: Double = 0.05) : String {
-    val template = Testing::class.java.getResource("/template.html")
-    val renderJS = Testing::class.java.getResource("/render.js")
-    val d3js = Testing::class.java.getResource("/d3.v4.min.js")
-    val stylesheet = Testing::class.java.getResource("/stylesheet.css")
+    val template = getResource("/template.html")
+    val renderJS = getResource("/render.js")
+    val d3js = getResource("/d3.v4.min.js")
+    val stylesheet = getResource("/stylesheet.css")
     var outputText = template.readText()
     outputText=outputText.replace("%%D3%%",d3js.path).replace("%%RENDER%%",renderJS.path).replace("%%STYLESHEET%%",stylesheet.path)
     outputText=outputText.replace("%%RESULT1_NAME%%", result1.benchmarkName)
@@ -108,6 +99,8 @@ private fun dumpComparison(result1: Result, result2: Result, alpha: Double = 0.0
     file.writeText(outputText)
     return file.path
 }
+
+private fun getResource(path: String) = object {}.javaClass.getResource(path)
 
 fun Result.histogram() : List<Array<Double>> {
     val binCount = 21

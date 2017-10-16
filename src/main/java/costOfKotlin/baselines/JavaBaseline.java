@@ -1,7 +1,6 @@
 package costOfKotlin.baselines;
 
 import costOfKotlin.strings.StringState;
-import org.junit.Test;
 import org.openjdk.jmh.annotations.Benchmark;
 import org.openjdk.jmh.infra.Blackhole;
 
@@ -11,8 +10,4 @@ public class JavaBaseline {
     public void baseline(StringState state, Blackhole blackhole) {
         blackhole.consume(state);
     }
-
-
-    @Test
-    public void dummy() {}
 }

@@ -1,13 +1,7 @@
 package costOfKotlin.mapping
 
-import com.natpryce.hamkrest.and
-import com.natpryce.hamkrest.assertion.assertThat
-import com.oneeyedmen.kostings.probablyFasterThan
-import org.junit.Test
 import org.openjdk.jmh.annotations.Benchmark
 import java.util.function.Consumer
-import kotlin.reflect.KFunction
-import kotlin.test.assertEquals
 
 open class KotlinMapping {
 
@@ -70,22 +64,7 @@ open class KotlinMapping {
     fun foreach_map_linkedList(listState: ListState) : List<String> {
         return listState.linkedListOfStrings.forEachMap { it }
     }
-
-    @Test
-    fun `on arrayList map is quite a lot slower than indexed access`() {
-        assertThat(this::baseline_indexed_arrayList, probablyFasterByBetween(this::map_arrayList, 0.2, 0.3))
-    }
-
-    @Test
-    fun spliteratorMap() {
-        val list = listOf("hello", "world")
-        assertEquals(list.map { it.length }, list.spliteratorMap { it.length })
-    }
-
 }
-
-fun probablyFasterByBetween(reference: KFunction<*>, minFactor: Double, maxFactor: Double) =
-    probablyFasterThan(reference, byAFactorOf = minFactor) and ! probablyFasterThan(reference, byAFactorOf = maxFactor)
 
 inline fun <T, R> List<T>.indexedMap(transform: (T) -> R): List<R> {
     val result = ArrayList<R>(this.size)

@@ -131,9 +131,6 @@ THE POSSIBILITY OF SUCH DAMAGE.
             <plugin>
                 <artifactId>kotlin-maven-plugin</artifactId>
                 <groupId>org.jetbrains.kotlin</groupId>
-                <!--
-                   Put an approriate Kotlin compiler version here.
-                 -->
                 <version>${kotlin.version}</version>
 
                 <executions>
@@ -146,6 +143,17 @@ THE POSSIBILITY OF SUCH DAMAGE.
                         <configuration>
                             <sourceDirs>
                                 <sourceDir>${project.basedir}/src/main/java</sourceDir>
+                            </sourceDirs>
+                        </configuration>
+                    </execution>
+
+                    <execution>
+                        <id>test-compile</id>
+                        <goals> <goal>test-compile</goal> </goals>
+                        <configuration>
+                            <sourceDirs>
+                                <sourceDir>${project.basedir}/src/test/java</sourceDir>
+                                <sourceDir>${project.basedir}/src/performance-tests/java</sourceDir>
                             </sourceDirs>
                         </configuration>
                     </execution>
@@ -227,6 +235,20 @@ THE POSSIBILITY OF SUCH DAMAGE.
                             </sources>
                         </configuration>
                     </execution>
+
+                    <!-- Later, we'll also want the performance tests compiled -->
+                    <execution>
+                        <id>add-test-source</id>
+                        <phase>pre-integration-test</phase>
+                        <goals>
+                            <goal>add-test-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/performance-tests/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
                 </executions>
             </plugin>
 
@@ -269,6 +291,33 @@ THE POSSIBILITY OF SUCH DAMAGE.
                                     </excludes>
                                 </filter>
                             </filters>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20.1</version>
+                <executions>
+                    <execution>
+                        <id>default-test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <excludes><exclude>%regex[costOfKotlin.*]</exclude></excludes>
+                        </configuration>
+                    </execution>
+                    <execution>
+                        <id>performance-tests</id>
+                        <phase>integration-test</phase>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <configuration>
+                            <includes><include>%regex[costOfKotlin.*]</include></includes>
                         </configuration>
                     </execution>
                 </executions>
