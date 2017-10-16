@@ -1,16 +1,13 @@
 #!/usr/bin/env bash
 
-# lets try defaults
-
-./benchmark.sh -f 10 -wi 20 -i 20 -o run1
-./benchmark.sh -f 10 -wi 20 -i 20 -o run2
-./benchmark.sh -f 10 -wi 20 -i 20 -o run3
-./benchmark.sh -f 10 -wi 20 -i 20 -o run4
-./benchmark.sh -f 10 -wi 20 -i 20 -o run5
-
-# and then same number of iterations, but 1 fork
-#./benchmark.sh -f 1 -wi 20 -i 200 -o run1
-#./benchmark.sh -f 1 -wi 20 -i 200 -o run2
-#./benchmark.sh -f 1 -wi 20 -i 200 -o run3
-#./benchmark.sh -f 1 -wi 20 -i 200 -o run4
-#./benchmark.sh -f 1 -wi 20 -i 200 -o run5
+for i in `seq 1 100`;
+do
+    NAME=run$i
+    echo $NAME
+    ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME baselines
+    ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME primitives
+    ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME strings
+    ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME invoking
+    ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME mapping
+    ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME let
+done
