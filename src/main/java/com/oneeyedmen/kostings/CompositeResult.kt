@@ -18,7 +18,7 @@ class CompositeResult(results: Iterable<Result>) : Result {
     override val benchmarkName: String = results.allTheSame(Result::benchmarkName)
     override val mode: String = results.allTheSame(Result::mode)
     override val units: String = results.allTheSame(Result::units)
-    override val data: DescriptiveStatistics = results.map { it.data }.concatStats()
+    override val data: DescriptiveStatistics by lazy { results.map { it.data }.concatStats() }
 
     override fun toString() = _toString()
 }
