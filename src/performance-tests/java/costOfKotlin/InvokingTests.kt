@@ -1,20 +1,22 @@
 package costOfKotlin
 
-import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.oneeyedmen.kostings.probablyDifferentTo
 import com.oneeyedmen.kostings.probablyFasterThan
 import costOfKotlin.invoking.Invoking
 import org.junit.Test
-import kotlin.reflect.KFunction
 
 class InvokingTests {
     
 
     @Test
     fun `invoke via reference is slower than plain invocation`() {
-        assertThat(Invoking::baseline, probablyFasterThan(Invoking::invoke_via_reference, byAFactorOf = 0.01))
-        assertThat(Invoking::baseline, !probablyFasterThan(Invoking::invoke_via_reference, byAFactorOf = 0.02))
+        assertThat(Invoking::baseline, probablyFasterThan(Invoking::invoke_via_reference, byMoreThan = 0.20, butNotMoreThan = 0.25))
+    }
+
+    @Test
+    fun `inlined invocation is marginally slower`() {
+        assertThat(Invoking::baseline, probablyFasterThan(Invoking::passed_as_lambda, byMoreThan = 0.00, butNotMoreThan = 0.01))
     }
 
     @Test
@@ -24,10 +26,8 @@ class InvokingTests {
 
     @Test
     fun `value of function type is like via reference`() {
-        assertThat(Invoking::passed_as_lambda, probablyFasterButNotByMoreThan(Invoking::passed_as_value_of_function_type, aFactorOf = 0.02))
+        assertThat(Invoking::passed_as_lambda, probablyFasterThan(Invoking::passed_as_value_of_function_type, byMoreThan = 0.20, butNotMoreThan = 0.25))
     }
-
 
 }
 
-fun probablyFasterButNotByMoreThan(other: KFunction<*>, aFactorOf: Double) = probablyFasterThan(other) and !probablyFasterThan(other, byAFactorOf = aFactorOf)
