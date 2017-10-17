@@ -7,11 +7,11 @@ import org.apache.commons.math3.stat.descriptive.StatisticalSummaryValues
 import org.apache.commons.math3.stat.inference.TestUtils.tTest
 
 /**
- * Is it likely that the test [Stats] shows a significantly different mean metric than the benchmark [Stats] ? (either higher or lower)
+ * Is it likely that the actual [Stats] shows a significantly different mean metric than the reference [Stats] ? (either higher or lower)
  *
- * Use Student's T testing to determine if there is a statistically significant difference between the test and benchmark samples in the [Stats]s
+ * Use Student's T testing to determine if there is a statistically significant difference between the actual and reference samples in the [Stats]s
  *
- * @param[reference] the benchmark [Stats]
+ * @param[reference] the reference [Stats]
  * @param[alpha] the significance level, as a [Double] in percent
  *      (e.g. 0.05 represents an alpha of 5%, meaning there is a 5% chance this result is random - i.e. 95% probability that this conclusion is correct)
  *
@@ -22,20 +22,20 @@ fun probablyDifferentTo(reference: Stats, alpha: Double = 0.05): Matcher<Stats> 
             override val description get() = "was statistically significantly different to ${reference.description}"
 
             override fun invoke(actual: Stats): MatchResult {
-                //the null-Hypothesis is that test == benchmark
+                //the null-Hypothesis is that actual == reference
                 return matchIf(tTest(reference.data, actual.data), isLessThan = alpha)
             }
         }
 
 
 /**
- * Is it likely that the test [Stats] shows a significantly smaller metric than the benchmark [Stats] ?
+ * Is it likely that the actual [Stats] shows a significantly smaller metric than the reference [Stats] ?
  *
- * Use Student's T testing to determine if there is a statistically significant negative difference between the test and benchmark samples in the [Stats]s
+ * Use Student's T testing to determine if there is a statistically significant negative difference between the actual and reference samples in the [Stats]s
  *
- * @param[reference] the benchmark [Stats]
- * @param[byAFactorOf] the expected factor by which the test mean is smaller than the benchmark mean, as a [Double] percent of the benchmark mean
- *      (e.g. 0.10 would be 10%, implying the test mean is expected to be >10% smaller than the benchmark mean, or >90% of the benchmark mean)
+ * @param[reference] the reference [Stats]
+ * @param[byAFactorOf] the expected factor by which the actual mean is smaller than the reference mean, as a [Double] percent of the reference mean
+ *      (e.g. 0.10 would be 10%, implying the actual mean is expected to be >10% smaller than the reference mean, or >90% of the reference mean)
  * @param[alpha] the significance level, as a [Double] in percent
  *      (e.g. 0.05 represents an alpha of 5%, meaning there is a 5% chance this result is random - i.e. 95% probability that this conclusion is correct)
  *
@@ -53,20 +53,20 @@ fun probablyLessThan(reference: Stats, byAFactorOf: Double = 0.0, alpha: Double 
                     // no chance this is probable
                     meanMismatch(offsetStats.mean, factorAmount, ">=", referenceMean)
                 else
-                    // the null-Hypothesis is that test mean-byAFactorOf*benchmark mean > benchmark mean
+                    // the null-Hypothesis is that actual mean-byAFactorOf*reference mean > reference mean
                     matchIf(oneSidedTTest(reference.data, offsetStats), isLessThan = alpha)
             }
         }
 
 
 /**
- * Is it likely that the test [Stats] shows a significantly greater metric than the benchmark [Stats] ?
+ * Is it likely that the actual [Stats] shows a significantly greater metric than the reference [Stats] ?
  *
- * Use Student's T testing to determine if there is a statistically significant positive difference between the test and benchmark samples in the [Stats]s
+ * Use Student's T testing to determine if there is a statistically significant positive difference between the actual and reference samples in the [Stats]s
  *
- * @param[reference] the benchmark [Stats]
- * @param[byAFactorOf] the expected factor by which the test mean is greater than the benchmark mean, as a [Double] percent of the benchmark mean
- *      (e.g. 0.10 would be 10%, implying the test mean is expected to be >10% larger than the benchmark mean, or >110% of the benchmark mean)
+ * @param[reference] the reference [Stats]
+ * @param[byAFactorOf] the expected factor by which the actual mean is greater than the reference mean, as a [Double] percent of the reference mean
+ *      (e.g. 0.10 would be 10%, implying the actual mean is expected to be >10% larger than the reference mean, or >110% of the reference mean)
  * @param[alpha] the significance level, as a [Double] in percent
  *      (e.g. 0.05 represents an alpha of 5%, meaning there is a 5% chance this result is random - i.e. 95% probability that this conclusion is correct)
  *
@@ -84,7 +84,7 @@ fun probablyMoreThan(reference: Stats, byAFactorOf: Double = 0.0, alpha: Double 
                     // no chance this is probable
                     meanMismatch(offsetStats.mean, factorAmount, "<=", referenceMean)
                 else
-                    // the null-Hypothesis is that test mean-byAFactorOf*benchmark mean < benchmark mean
+                    // the null-Hypothesis is that actual mean-byAFactorOf*reference mean < reference mean
                     matchIf(oneSidedTTest(reference.data, offsetStats), isLessThan = alpha)
             }
         }
@@ -98,7 +98,7 @@ private fun meanMismatch(offsetMean: Double, factorAmount: Double, comparison: S
 
 private fun matchIf(actualAlpha: Double, isLessThan: Double) =
     if (actualAlpha < isLessThan) {
-        // we can say test mean != benchmark mean, with a probability of alpha% that we are wrong (i.e. (1 - alpha)% confidence)
+        // we can say actual mean != reference mean, with a probability of alpha% that we are wrong (i.e. (1 - alpha)% confidence)
         MatchResult.Match
     } else {
         // we can't say it's different
