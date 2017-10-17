@@ -53,3 +53,4 @@ fabric.properties
 .DS_Store
 /old-images/
 /results/*.png
+/canonical-results/*.png
