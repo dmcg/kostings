@@ -23,8 +23,7 @@ fun probablyDifferentTo(reference: Stats, alpha: Double = 0.05): Matcher<Stats> 
 
             override fun invoke(actual: Stats): MatchResult {
                 //the null-Hypothesis is that test == benchmark
-                val actualAlpha = tTest(reference.data, actual.data)
-                return matchIf(actualAlpha, isLessThan = alpha)
+                return matchIf(tTest(reference.data, actual.data), isLessThan = alpha)
             }
         }
 
@@ -47,18 +46,15 @@ fun probablyLessThan(reference: Stats, byAFactorOf: Double = 0.0, alpha: Double 
             override val description get() = "was statistically significantly less than ${reference.description}" + descriptionOf(byAFactorOf)
 
             override fun invoke(actual: Stats): MatchResult {
-                val benchmarkMean = reference.data.mean
-                val factorAmount = benchmarkMean * byAFactorOf
+                val referenceMean = reference.data.mean
+                val factorAmount = referenceMean * byAFactorOf
                 val offsetStats = actual.data.offsetBy(factorAmount)
-                //is the test mean actually larger?
-                if (offsetStats.mean >= benchmarkMean)
-                    //yup - so no chance this is probable
-                    return MatchResult.Mismatch((if (byAFactorOf>0.0) "the offset mean was larger: offset" else "the mean was larger:") + " test mean[${offsetStats.mean}] > benchmark mean[$benchmarkMean]")
-                else {
-                    //t-Test the null-Hypothesis is that test mean-byAFactorOf*benchmark mean > benchmark mean
-                    val actualAlpha = tTest(reference.data, offsetStats) / 2 //one-sided tTest so /2
-                    return matchIf(actualAlpha, isLessThan = alpha)
-                }
+                return if (offsetStats.mean >= referenceMean)
+                    // no chance this is probable
+                    meanMismatch(offsetStats.mean, factorAmount, ">=", referenceMean)
+                else
+                    // the null-Hypothesis is that test mean-byAFactorOf*benchmark mean > benchmark mean
+                    matchIf(oneSidedTTest(reference.data, offsetStats), isLessThan = alpha)
             }
         }
 
@@ -81,22 +77,24 @@ fun probablyMoreThan(reference: Stats, byAFactorOf: Double = 0.0, alpha: Double 
             override val description get() = "was statistically significantly more than ${reference.description}" + descriptionOf(byAFactorOf)
 
             override fun invoke(actual: Stats): MatchResult {
-                val benchmarkMean = reference.data.mean
-                val factorAmount = benchmarkMean * byAFactorOf
-                val offsetStats = actual.data.offsetBy(-factorAmount)
-                //is the test mean actually smaller?
-                if (offsetStats.mean <= benchmarkMean)
-                    //yup - so no chance this is probable
-                    return MatchResult.Mismatch((if (byAFactorOf>0.0) "the offset mean was smaller: offset" else "the mean was smaller:") + " test mean[${offsetStats.mean}] < benchmark mean[$benchmarkMean]")
-                else {
-                    //t-Test the null-Hypothesis is that test mean-byAFactorOf*benchmark mean < benchmark mean
-                    val actualAlpha = tTest(reference.data, offsetStats) / 2 //one-sided tTest so /2
-                    return matchIf(actualAlpha, isLessThan = alpha)
-                }
+                val referenceMean = reference.data.mean
+                val factorAmount = referenceMean * -byAFactorOf
+                val offsetStats = actual.data.offsetBy(factorAmount)
+                return if (offsetStats.mean <= referenceMean)
+                    // no chance this is probable
+                    meanMismatch(offsetStats.mean, factorAmount, "<=", referenceMean)
+                else
+                    // the null-Hypothesis is that test mean-byAFactorOf*benchmark mean < benchmark mean
+                    matchIf(oneSidedTTest(reference.data, offsetStats), isLessThan = alpha)
             }
         }
 
+private fun oneSidedTTest(sampleStats1: StatisticalSummary, sampleStats2: StatisticalSummary) = tTest(sampleStats1, sampleStats2) / 2
+
 private fun descriptionOf(byAFactorOf: Double) = if (byAFactorOf > 0.0) " by a factor of $byAFactorOf" else ""
+
+private fun meanMismatch(offsetMean: Double, factorAmount: Double, comparison: String, referenceMean: Double) =
+    MatchResult.Mismatch("[actual mean offset by $factorAmount (${offsetMean})] $comparison [reference mean ($referenceMean)] ")
 
 private fun matchIf(actualAlpha: Double, isLessThan: Double) =
     if (actualAlpha < isLessThan) {
@@ -104,7 +102,7 @@ private fun matchIf(actualAlpha: Double, isLessThan: Double) =
         MatchResult.Match
     } else {
         // we can't say it's different
-        MatchResult.Mismatch("the expectation cannot be met because the probability of being wrong $actualAlpha is greater than required probability alpha[$isLessThan]")
+        MatchResult.Mismatch("[probability of being wrong ($actualAlpha)] >= [required probability ($isLessThan)]")
     }
 
 
