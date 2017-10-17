@@ -4,7 +4,6 @@ import com.natpryce.hamkrest.MatchResult
 import com.natpryce.hamkrest.Matcher
 import com.oneeyedmen.kostings.matchers.Stats
 import com.oneeyedmen.kostings.matchers.probablyDifferentTo
-import com.oneeyedmen.kostings.matchers.probablyLessThan
 import com.oneeyedmen.kostings.matchers.probablyMoreThan
 import kotlin.jvm.internal.FunctionReference
 import kotlin.reflect.KClass
@@ -21,8 +20,27 @@ fun probablyDifferentTo(benchmarkFunction: BenchmarkFunction, alpha: Double = 0.
 fun probablyFasterThan(benchmarkFunction: BenchmarkFunction, byAFactorOf: Double = 0.0, alpha: Double = 0.05) =
     benchmarkMatcher(benchmarkFunction, alpha) { probablyMoreThan(it, byAFactorOf, alpha) }
 
-fun probablySlowerThan(benchmarkFunction: BenchmarkFunction, byAFactorOf: Double = 0.0, alpha: Double = 0.05) =
-    benchmarkMatcher(benchmarkFunction, alpha) { probablyLessThan(it, byAFactorOf, alpha) }
+fun probablyFasterThan(benchmarkFunction: BenchmarkFunction, byMoreThan: Double, butNotMoreThan: Double, alpha: Double = 0.05) = object : Matcher<BenchmarkFunction>
+{
+    init {
+        require(byMoreThan < butNotMoreThan) { "byMoreThan ($byMoreThan) >= butNotMoreThan ($butNotMoreThan)"}
+    }
+
+    override val description get() =
+        "is probably faster that ${benchmarkFunction.methodName} by a factor of between $byMoreThan and $butNotMoreThan"
+
+    override fun invoke(actual: BenchmarkFunction): MatchResult {
+        val lowResult = probablyFasterThan(benchmarkFunction, byAFactorOf = byMoreThan, alpha = alpha).invoke(actual)
+        if (lowResult is MatchResult.Mismatch)
+            return MatchResult.Mismatch("actual was not faster by more than a factor of $byMoreThan because " + lowResult.description)
+
+        val highResult = probablyFasterThan(benchmarkFunction, byAFactorOf = butNotMoreThan, alpha = alpha).invoke(actual)
+        if (highResult is MatchResult.Match)
+            return MatchResult.Mismatch("actual was probably faster by more than a factor of $butNotMoreThan")
+        return MatchResult.Match
+    }
+
+}
 
 private fun benchmarkMatcher(benchmarkFunction: BenchmarkFunction, alpha : Double, comparator: (Stats) -> Matcher<Stats>) =
     object : Matcher<BenchmarkFunction> {
