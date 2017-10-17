@@ -10,9 +10,6 @@ import com.oneeyedmen.kostings.matchers.probablyMoreThan
 import org.apache.commons.math3.distribution.TDistribution
 import org.apache.commons.math3.random.EmpiricalDistribution
 import org.apache.commons.math3.stat.descriptive.DescriptiveStatistics
-import org.junit.internal.RealSystem
-import org.junit.internal.TextListener
-import org.junit.runner.JUnitCore
 import java.util.*
 import kotlin.jvm.internal.FunctionReference
 import kotlin.reflect.KClass
@@ -20,17 +17,6 @@ import kotlin.reflect.KFunction
 import kotlin.reflect.jvm.jvmName
 
 val resurrectedBatches by lazy { Results(Directories.canonicalResultsDir) }
-
-private fun Iterable<Result>.toBenchmarkClasses(): List<Class<*>> =
-    map { it.benchmarkName.toClassName() }.toSet().map { Class.forName(it) }
-
-private fun String.toClassName() = this.substringBeforeLast('.')
-
-fun runTests(vararg testClasses: Class<*>): org.junit.runner.Result =
-    JUnitCore().apply {
-        addListener(TextListener(RealSystem()))
-    }.run(*testClasses)
-
 
 fun probablyDifferentTo(benchmarkFunction: KFunction<*>, alpha: Double = 0.05) =
     benchmarkMatcher(benchmarkFunction, alpha) { probablyDifferentTo(it, alpha) }
