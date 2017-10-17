@@ -9,8 +9,8 @@ import org.junit.Test
 class LetTests {
 
     @Test
-    fun test() {
-        assertThat(KotlinLet::baseline, !probablyFasterThan(KotlinLet::let))
-        assertThat(KotlinLet::baseline, !probablyDifferentTo(KotlinLet::let))
+    fun `let is marginally undetectable`() {
+        assertThat(KotlinLet::baseline, probablyDifferentTo(KotlinLet::let))
+        assertThat(KotlinLet::baseline, ! probablyFasterThan(KotlinLet::let))
     }
 }
