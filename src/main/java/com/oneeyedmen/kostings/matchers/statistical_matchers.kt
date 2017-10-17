@@ -19,7 +19,7 @@ import org.apache.commons.math3.stat.inference.TestUtils.tTest
  */
 fun probablyDifferentTo(reference: Stats, alpha: Double = 0.05): Matcher<Stats> =
         object : Matcher<Stats> {
-            override val description get() = "was statistically significantly different to ${reference.description}"
+            override val description get() = "is statistically significantly different to ${reference.description}"
 
             override fun invoke(actual: Stats): MatchResult {
                 //the null-Hypothesis is that actual == reference
@@ -43,7 +43,7 @@ fun probablyDifferentTo(reference: Stats, alpha: Double = 0.05): Matcher<Stats> 
  */
 fun probablyLessThan(reference: Stats, byAFactorOf: Double = 0.0, alpha: Double = 0.05): Matcher<Stats> =
         object : Matcher<Stats> {
-            override val description get() = "was statistically significantly less than ${reference.description}" + descriptionOf(byAFactorOf)
+            override val description get() = "is statistically significantly less than ${reference.description}" + descriptionOf(byAFactorOf)
 
             override fun invoke(actual: Stats): MatchResult {
                 val referenceMean = reference.data.mean
@@ -74,7 +74,7 @@ fun probablyLessThan(reference: Stats, byAFactorOf: Double = 0.0, alpha: Double 
  */
 fun probablyMoreThan(reference: Stats, byAFactorOf: Double = 0.0, alpha: Double = 0.05): Matcher<Stats> =
         object : Matcher<Stats> {
-            override val description get() = "was statistically significantly more than ${reference.description}" + descriptionOf(byAFactorOf)
+            override val description get() = "is statistically significantly more than ${reference.description}" + descriptionOf(byAFactorOf)
 
             override fun invoke(actual: Stats): MatchResult {
                 val referenceMean = reference.data.mean
