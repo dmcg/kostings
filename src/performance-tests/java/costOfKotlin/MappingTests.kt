@@ -1,19 +1,18 @@
 package costOfKotlin
 
-import com.natpryce.hamkrest.and
 import com.natpryce.hamkrest.assertion.assertThat
 import com.oneeyedmen.kostings.probablyFasterThan
 import costOfKotlin.mapping.KotlinMapping
 import costOfKotlin.mapping.spliteratorMap
 import org.junit.Test
-import kotlin.reflect.KFunction
 import kotlin.test.assertEquals
 
 class KotlinMappingTests {
 
     @Test
     fun `on arrayList map is quite a lot slower than indexed access`() {
-        assertThat(KotlinMapping::baseline_indexed_arrayList, probablyFasterByBetween(KotlinMapping::map_arrayList, 0.2, 0.3))
+        assertThat(KotlinMapping::baseline_indexed_arrayList,
+            probablyFasterThan(KotlinMapping::map_arrayList, byMoreThan = 0.3, butNotMoreThan = 0.4))
     }
 
     @Test
@@ -23,7 +22,3 @@ class KotlinMappingTests {
     }
 
 }
-
-fun probablyFasterByBetween(reference: KFunction<*>, minFactor: Double, maxFactor: Double) =
-    probablyFasterThan(reference, byAFactorOf = minFactor) and !probablyFasterThan(reference, byAFactorOf = maxFactor)
-
