@@ -5,8 +5,13 @@ import org.openjdk.jmh.annotations.Benchmark
 class KotlinProperties {
 
     @Benchmark
-    fun field_access(state: KotlinState): String {
-        return state.field
+    fun property_access(state: KotlinState): String {
+        return state.witbBackingField
+    }
+
+    @Benchmark
+    fun no_backing_field_property_access(state: KotlinState): String {
+        return state.noBackingField
     }
 
     @Benchmark

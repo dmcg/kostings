@@ -6,7 +6,9 @@ import org.openjdk.jmh.annotations.State
 @State(Scope.Benchmark)
 class KotlinState {
 
-    val field = "hello"
+    val withBackingField = "hello"
+
+    val noBackingField get() = "hello"
 
     fun getConstant(): String {
         return "hello"
