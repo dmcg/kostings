@@ -2,7 +2,7 @@ package costOfKotlin.properties
 
 import org.openjdk.jmh.annotations.Benchmark
 
-class KotlinProperties {
+open class KotlinProperties {
 
     @Benchmark
     fun property_access(state: KotlinState): String {
