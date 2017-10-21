@@ -1,21 +1,26 @@
 package costOfKotlin.strings
 
 import org.openjdk.jmh.annotations.Benchmark
-import org.openjdk.jmh.infra.Blackhole
 
+@Suppress("RemoveSingleExpressionStringTemplate")
 open class KotlinStrings {
 
     @Benchmark
-    fun baseline(state: StringState, blackhole: Blackhole) {
-        blackhole.consume(state.hello)
-        blackhole.consume(state.world)
+    fun concat(state: StringState): String {
+        /* There is an extra append("") compared to the Java
+           but Kotlin uses char 32 in between rather than " "
+         */
+        return "${state.greeting} ${state.subject}"
     }
 
     @Benchmark
-    fun concat(state: StringState, blackhole: Blackhole) {
-        /* There is an extra append("") compared to the Java
-         */
-        blackhole.consume("${state.hello} ${state.world}")
+    fun desugared_concat(state: StringState): String? {
+        return StringBuilder().append(state.greeting).append(' ').append(state.subject).toString()
+    }
+
+    @Benchmark
+    fun optimized_concat(state: StringState): String? {
+        return StringBuilder(state.greeting).append(' ').append(state.subject).toString()
     }
 
     fun `the compiler optimizes this to a constant`() = "${"hello"} ${"world"}"
