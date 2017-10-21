@@ -4,7 +4,7 @@ import org.openjdk.jmh.annotations.Scope
 import org.openjdk.jmh.annotations.State
 
 @State(Scope.Benchmark)
-class KotlinState {
+open class KotlinState {
 
     val withBackingField = "hello"
 
