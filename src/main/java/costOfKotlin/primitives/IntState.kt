@@ -6,7 +6,7 @@ import org.openjdk.jmh.annotations.Setup
 import org.openjdk.jmh.annotations.State
 import java.util.*
 
-@State(Scope.Thread)
+@State(Scope.Benchmark)
 open class IntState {
 
     val _41 = 41
@@ -16,6 +16,7 @@ open class IntState {
     var `50 50 NullableInt`: Int? = 0
     var `90 10 NullableInt`: Int? = 0
 
+    // TODO Level.Invocation is suss
     @Setup(Level.Invocation)
     fun init() {
         randomInt = random.nextInt(10)
