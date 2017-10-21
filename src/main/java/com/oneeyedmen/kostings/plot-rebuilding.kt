@@ -5,7 +5,7 @@ object PlotRebuilding{
 
     @JvmStatic
     fun main(args: Array<String>) {
-        readBatches(Directories.resultsDir).asIterable().plotIn(Directories.imagesDir)
+        readBatches(Directories.canonicalResultsDir).asIterable().plotIn(Directories.canonicalResultsDir, rebuild = false)
     }
 
 }
