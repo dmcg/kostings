@@ -6,7 +6,7 @@ class KotlinProperties {
 
     @Benchmark
     fun property_access(state: KotlinState): String {
-        return state.witbBackingField
+        return state.withBackingField
     }
 
     @Benchmark
