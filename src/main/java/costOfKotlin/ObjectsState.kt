@@ -7,6 +7,6 @@ import org.openjdk.jmh.annotations.State
 open class ObjectsState {
 
     val objects = List(10000) {
-        "hello " + it
+        "hello " + it / 2
     }
 }

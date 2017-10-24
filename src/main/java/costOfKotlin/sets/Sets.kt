@@ -12,7 +12,7 @@ open class Sets {
         }
     }
 
-    @Benchmark fun hashSet(state: ObjectsState): List<String> {
+    @Benchmark fun default_set(state: ObjectsState): List<String> {
         return state.objects.toSet().map {
             it + " "
         }
