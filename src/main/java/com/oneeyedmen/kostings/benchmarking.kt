@@ -22,17 +22,15 @@ object Benchmarking {
         val patterns = if (commandLineOptions.includes.isNotEmpty()) commandLineOptions.includes else defaultPatterns
 
         readOrRunBenchmarks(patterns, batchOptions, Directories.resultsDir)
-            .plotIn(Directories.imagesDir)
     }
 
     private fun readOrRunBenchmarks(patterns: List<String>, batchOptions: BatchOptions, outputDir: File) =
         patterns.map { readOrRunBenchmark(batchOptions.copy(pattern = it), outputDir) }
 
-    private fun readOrRunBenchmark(batchOptions: BatchOptions, outputDir: File): Batch {
+    private fun readOrRunBenchmark(batchOptions: BatchOptions, outputDir: File) {
         val file = outputDir.resolve(batchOptions.outputFilename + ".json")
         if (!file.isAResultFile())
             runBenchmark(batchOptions, file)
-        return Batch.readFromJson(file)!! // we had better be able to read it, as we just wrote it
     }
 
     private fun runBenchmark(batchOptions: BatchOptions, outputFile: File) {

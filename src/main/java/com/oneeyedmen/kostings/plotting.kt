@@ -3,6 +3,16 @@ package com.oneeyedmen.kostings
 import java.io.File
 import java.util.concurrent.TimeUnit
 
+
+object Plotting{
+
+    @JvmStatic
+    fun main(args: Array<String>) {
+        val dir = File("raspi-results")
+        readBatches(dir).asIterable().plotIn(dir, rebuild = false)
+    }
+}
+
 fun Iterable<Batch>.plotIn(outputDir: File, rebuild: Boolean = false) =
     forEach {
         it.plotIn(outputDir, rebuild)
