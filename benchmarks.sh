@@ -10,4 +10,5 @@ do
     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME invoking
     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME mapping
     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME let
+    ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME sets
 done
