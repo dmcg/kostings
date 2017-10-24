@@ -15,7 +15,7 @@ open class KotlinStrings {
 
     @Benchmark
     fun desugared_concat(state: StringState): String? {
-        return StringBuilder().append(state.greeting).append(' ').append(state.subject).toString()
+        return StringBuilder().append("").append(state.greeting).append(' ').append(state.subject).toString()
     }
 
     @Benchmark

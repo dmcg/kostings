@@ -54,3 +54,4 @@ fabric.properties
 /old-images/
 /results/*.png
 /canonical-results/*.png
+/raspi-results/*.png
