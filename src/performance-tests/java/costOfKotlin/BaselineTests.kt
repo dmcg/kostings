@@ -9,7 +9,12 @@ import org.junit.Test
 class BaselineTests {
 
     @Test
-    fun `Java is quicker but not by much`() {
-        assertThat(JavaBaseline::baseline, probablyFasterThan(KotlinBaseline::baseline, byMoreThan = 0.03, butNotMoreThan = 0.04))
+    fun `Kotlin null check has some cost`() {
+        assertThat(
+            JavaBaseline::baseline,
+            probablyFasterThan(
+                KotlinBaseline::baseline,
+                byMoreThan = 0.03,
+                butNotMoreThan = 0.04))
     }
 }
