@@ -8,7 +8,11 @@ public class JavaState {
 
     public String field = "hello";
 
-    public final String getConstant() {
+    public String getField() {
+        return field;
+    }
+
+    public String getConstant() {
         return "hello";
     }
 }

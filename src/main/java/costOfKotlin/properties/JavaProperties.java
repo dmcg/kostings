@@ -10,6 +10,11 @@ public class JavaProperties {
     }
 
     @Benchmark
+    public String getter(JavaState state) {
+        return state.getField();
+    }
+
+    @Benchmark
     public String method_access(JavaState state) {
         return state.getConstant();
     }
