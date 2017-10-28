@@ -2,6 +2,7 @@ package com.oneeyedmen.kostings
 
 import com.natpryce.hamkrest.MatchResult
 import com.natpryce.hamkrest.Matcher
+import com.natpryce.hamkrest.and
 import com.oneeyedmen.kostings.matchers.Stats
 import com.oneeyedmen.kostings.matchers.probablyDifferentTo
 import com.oneeyedmen.kostings.matchers.probablyMoreThan
@@ -19,6 +20,8 @@ fun probablyDifferentTo(benchmarkFunction: BenchmarkFunction, alpha: Double = 0.
 
 fun probablyFasterThan(benchmarkFunction: BenchmarkFunction, byAFactorOf: Double = 0.0, alpha: Double = 0.05) =
     benchmarkMatcher(benchmarkFunction, alpha) { probablyMoreThan(it, byAFactorOf, alpha) }
+
+fun notProvablyFasterThan(benchmarkFunction: BenchmarkFunction) = probablyDifferentTo(benchmarkFunction) and ! probablyFasterThan(benchmarkFunction)
 
 fun probablyFasterThan(benchmarkFunction: BenchmarkFunction, byMoreThan: Double, butNotMoreThan: Double, alpha: Double = 0.05) = object : Matcher<BenchmarkFunction>
 {
