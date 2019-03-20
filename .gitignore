@@ -51,7 +51,11 @@ crashlytics-build.properties
 fabric.properties
 
 .DS_Store
-/old-images/
-/results/*.png
-/canonical-results/*.png
-/raspi-results/*.png
+old-images/
+results/*.png
+canonical-results/*.png
+raspi-results/*.png
+
+results/
+
+.idea/
