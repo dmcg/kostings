@@ -1,15 +1,24 @@
 #!/usr/bin/env bash
 
-for i in `seq 1 100`;
+tests=${@:-
+    errorHandling
+    mapLike
+    baselines
+    primitives
+    strings
+    invoking
+    mapping
+    let
+    properties
+}
+
+for i in $(seq 1 100)
 do
     NAME=run$i
     echo $NAME
-     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME mapLike
-     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME baselines
-     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME primitives
-     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME strings
-     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME invoking
-     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME mapping
-     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME let
-     ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME properties
+
+    for test in ${tests}
+    do
+        echo ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME $test
+    done
 done
