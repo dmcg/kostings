@@ -38,7 +38,29 @@ fun arrowCombine(s: String, t: String): Either<ParseFailure, Int> =
         a + b
     }
 
+
+fun exceptionsParse(s: String): Int =
+    when (s) {
+        "1" -> 1
+        "2" -> 2
+        else -> throw IllegalArgumentException(s)
+    }
+
+fun exceptionsCombine(s: String, t: String) =
+    exceptionsParse(s) + exceptionsParse(t)
+
+
 open class ErrorHandling {
+    @Benchmark
+    fun success_with_exceptions(blackhole: Blackhole) {
+        blackhole.consume(exceptionsCombine("1", "2"))
+    }
+    
+    @Benchmark
+    fun failure_with_exceptions(blackhole: Blackhole) {
+        blackhole.consume(exceptionsCombine("x", "2"))
+    }
+    
     @Benchmark
     fun success_with_result4k(blackhole: Blackhole) {
         blackhole.consume(result4kCombine("1", "2"))
