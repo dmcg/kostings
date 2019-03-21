@@ -59,3 +59,5 @@ raspi-results/*.png
 results/
 
 .idea/
+
+venv/
