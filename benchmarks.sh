@@ -19,6 +19,6 @@ do
 
     for test in ${tests}
     do
-        echo ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME $test
+       ./benchmark.sh -f 1 -wi 20 -i 500 -o $NAME $test
     done
 done
