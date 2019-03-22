@@ -49,8 +49,32 @@ fun exceptionsParse(s: String): Int =
 fun exceptionsCombine(s: String, t: String) =
     exceptionsParse(s) + exceptionsParse(t)
 
+fun nullableParse(s: String): Int? =
+    when (s) {
+        "1" -> 1
+        "2" -> 2
+        else -> null
+    }
+
+fun nullableCombine(s: String, t: String): Int? =
+    nullableParse(s)?.let { parsed_s ->
+        nullableParse(t)?.let { parsed_t ->
+            return parsed_s + parsed_t
+        }
+    }
+
 
 open class ErrorHandling {
+    @Benchmark
+    fun success_with_nulls(blackhole: Blackhole) {
+        blackhole.consume(nullableCombine("1", "2"))
+    }
+    
+    @Benchmark
+    fun failure_with_nulls(blackhole: Blackhole) {
+        blackhole.consume(nullableCombine("x", "2"))
+    }
+    
     @Benchmark
     fun success_with_exceptions(blackhole: Blackhole) {
         blackhole.consume(exceptionsCombine("1", "2"))
